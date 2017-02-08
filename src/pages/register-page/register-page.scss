@@ -1,0 +1,34 @@
+page-register-page {
+
+	.toolbar-background {
+		border-color: color($colors, primary);
+		background: color($colors, secondary);
+	}
+
+	.register-content{
+		color: #FFF;
+    background-color: color($colors, primary, secondary);
+
+		ion-slides {
+			height: auto;
+		}
+
+		.largtext{
+			font-size: 50px;
+		}
+
+		.logo-row {
+			padding-top: 50px;
+			padding-bottom: 20px;
+		}
+
+		ion-row {
+       align-items: center;
+       text-align: center;
+     }
+
+		.submit-btn{
+			background: color($colors, secondary);
+		}
+	}
+}

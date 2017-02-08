@@ -1,0 +1,118 @@
+<!--
+  Generated template for the RegisterPage page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-navbar color="secondary">
+      <ion-title>
+        Sign Up
+      </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content class="register-content">
+	<ion-row class="logo-row">
+		<ion-col width-100 text-center>
+			<h1 class="largtext">Welcome</h1>
+		</ion-col>
+	</ion-row>
+  <ion-slides #signupSlider>
+  	<ion-slide>
+			<!-- <p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p> -->
+			<ion-list>
+    		<form [formGroup]="slideOneForm">
+					<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
+					<ion-item-divider color="primary">Name</ion-item-divider>
+        	<ion-item>
+            <ion-label floating>First Name</ion-label>
+            <ion-input formControlName="firstName" type="text"></ion-input>
+        	</ion-item>
+        	<ion-item>
+            <ion-label floating>Last Name</ion-label>
+            <ion-input formControlName="lastName" type="text"></ion-input>
+        	</ion-item>
+					<ion-item-divider color="primary">Password</ion-item-divider>
+					<ion-item>
+            <ion-label floating>Password</ion-label>
+            <ion-input formControlName="password" type="password"></ion-input>
+        	</ion-item>
+					<ion-item>
+            <ion-label floating>Confirm password</ion-label>
+            <ion-input formControlName="confirmPassword" type="password"></ion-input>
+        	</ion-item>
+					<ion-item-divider color="primary">Additional Information</ion-item-divider>
+					<ion-item>
+            <ion-label floating>Email</ion-label>
+            <ion-input formControlName="email" type="email"></ion-input>
+        	</ion-item>
+        	<ion-item>
+						<ion-label floating>Date</ion-label>
+  					<ion-datetime displayFormat="MMM DD, YYYY" formControlName="dob"></ion-datetime>
+        	</ion-item>
+					<ion-item>
+						<ion-label floating>Gender</ion-label>
+							<ion-select formControlName="gender">
+								<ion-option value="M" checked="true">Male</ion-option>
+								<ion-option value="F">Female</ion-option>
+							</ion-select>
+        	</ion-item>
+					<ion-item>
+						<ion-label floating>Country</ion-label>
+							<ion-select formControlName="country">
+								<ion-option *ngFor="let item of countryList" [value]="item.alpha2">{{item.name}}</ion-option>
+							</ion-select>
+        	</ion-item>
+    		</form>
+			</ion-list>
+    </ion-slide>
+			<ion-list>
+				<form [formGroup]="slideTwoForm">
+					<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
+					<ion-item-divider color="primary">Name</ion-item-divider>
+					<ion-item>
+						<ion-label floating>First Name</ion-label>
+						<ion-input formControlName="firstName" type="text"></ion-input>
+					</ion-item>
+					<ion-item>
+						<ion-label floating>Last Name</ion-label>
+						<ion-input formControlName="lastName" type="text"></ion-input>
+					</ion-item>
+					<ion-item-divider color="primary">Password</ion-item-divider>
+					<ion-item>
+						<ion-label floating>Password</ion-label>
+						<ion-input formControlName="password" type="password"></ion-input>
+					</ion-item>
+					<ion-item>
+						<ion-label floating>Confirm password</ion-label>
+						<ion-input formControlName="confirmPassword" type="password"></ion-input>
+					</ion-item>
+					<ion-item-divider color="primary">Additional Information</ion-item-divider>
+					<ion-item>
+						<ion-label floating>Email</ion-label>
+						<ion-input formControlName="email" type="email"></ion-input>
+					</ion-item>
+					<ion-item>
+						<ion-label floating>Date</ion-label>
+						<ion-datetime displayFormat="MMM DD, YYYY" formControlName="dob"></ion-datetime>
+					</ion-item>
+				</form>
+			</ion-list>
+    <ion-slide>
+
+    </ion-slide>
+
+    </ion-slides>
+
+</ion-content>
+<ion-footer>
+			<ion-navbar color="secondary">
+	      <ion-buttons>
+	        <button ion-button icon-left (click)="prev()"><ion-icon name="arrow-back"></ion-icon> Prev</button>
+	      </ion-buttons>
+	      <ion-buttons end>
+	        <button ion-button icon-right (click)="next()">Next <ion-icon name="arrow-forward"></ion-icon></button>
+	      </ion-buttons>
+	    </ion-navbar>
+</ion-footer>
