@@ -27,6 +27,7 @@ export class RegisterPage {
 		slideThreeForm: FormGroup;
 		slideFourForm: FormGroup;
 		countryList = [];
+    imagesToUpload: Array<File>;
 
     submitAttempt: boolean = false;
 
@@ -34,29 +35,27 @@ export class RegisterPage {
 		private auth: AuthService, private country: CountryService, private emailVal: EmailValidationService, private alertCtrl: AlertController) {
 
 			this.countryList = country.getCountryList();
+      this.imagesToUpload = [];
 
 			this.slideOneForm = formBuilder.group({
 				firstName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
         lastName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 				password: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 				confirmPassword: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-				email: ['', Validators.compose([Validators.maxLength(60), Validators.required, emailVal.CheckEmail])],
+				email: ['', Validators.compose([Validators.maxLength(60), Validators.required])],
 				gender: ['', Validators.required],
 				country: ['', Validators.required],
         dob: ['']
     	});
 			this.slideTwoForm = formBuilder.group({
-				firstName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-        lastName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-				password: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-				confirmPassword: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-				email: ['', Validators.compose([Validators.maxLength(60), Validators.required])],
-        dob: ['']
+				firstSq: ['', Validators.compose([Validators.required])],
+        firstAns: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+        secondSq: ['', Validators.compose([Validators.required])],
+        secondAns: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+			  thirdSq: ['', Validators.compose([Validators.required])],
+        thirdAns: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])]
     	});
-
-			console.log(this.slideOneForm.controls['email']);
 		}
-
     next(){
 			this.signupSlider.slideNext();
     }
@@ -69,21 +68,25 @@ export class RegisterPage {
 
     }
 
-		// onEmailChange(){
-		// 	console.log("Checking email");
-		// 	if(this.slideOneForm.controls['email'].value ===  ""){
-		// 		this.emailVal.CheckEmail(this.slideOneForm.controls['email'].value).subscribe(data => {
-		//       if (data == true) {
-		// 				this.slideOneForm.controls['email'].markAsInvalid(false);
-		//       }else{
-		// 				this.slideOneForm.controls['email'].markAsInvalid(true);
-		// 			}
-		//     },
-		//     error => {
-		//       this.showError(error);
-		//     });
-		// 	}
-		// }
+    fileChangeEvent(fileInput: any){
+      // console.log(this.images);
+      this.imagesToUpload = <Array<File> > fileInput.target.files
+      console.log(this.imagesToUpload);
+    }
+
+
+
+		onEmailChange(value){
+			console.log(value);
+			if(value !=  ""){
+				this.emailVal.CheckEmail(value).subscribe(data => {
+		      this.slideOneForm.controls['email'].setErrors(data);
+		    },
+		    error => {
+		      this.showError(error);
+		    });
+			}
+		}
 
 	showError(text) {
     setTimeout(() => {

@@ -66,7 +66,7 @@ export class AuthService {
 	User: UserInfo;
 	Profile: ProfileInfo;
 	tokenInfo: TokenInfo;
-	
+
   constructor(public http: Http) {
     // console.log(loginURL);
   }

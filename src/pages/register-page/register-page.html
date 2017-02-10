@@ -45,7 +45,7 @@
 					<ion-item-divider color="primary">Additional Information</ion-item-divider>
 					<ion-item>
             <ion-label floating>Email</ion-label>
-            <ion-input formControlName="email" type="email"></ion-input>
+            <ion-input formControlName="email" type="email" (blur)="onEmailChange($event.target.value)"></ion-input>
         	</ion-item>
         	<ion-item>
 						<ion-label floating>Date</ion-label>
@@ -67,44 +67,60 @@
     		</form>
 			</ion-list>
     </ion-slide>
-			<ion-list>
+    <ion-slide>
+      <ion-list>
 				<form [formGroup]="slideTwoForm">
 					<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
-					<ion-item-divider color="primary">Name</ion-item-divider>
+					<ion-item-divider color="primary">First Security Question</ion-item-divider>
 					<ion-item>
-						<ion-label floating>First Name</ion-label>
-						<ion-input formControlName="firstName" type="text"></ion-input>
+						<ion-label floating>Question</ion-label>
+						<ion-select formControlName="firstSq">
+              <ion-option value="test">test</ion-option>
+            </ion-select>
 					</ion-item>
+          <ion-item>
+            <ion-label floating>Answer</ion-label>
+            <ion-input formControlName="firstAns" type="text"></ion-input>
+        	</ion-item>
+          <ion-item-divider color="primary">Second Security Question</ion-item-divider>
 					<ion-item>
-						<ion-label floating>Last Name</ion-label>
-						<ion-input formControlName="lastName" type="text"></ion-input>
+						<ion-label floating>Question</ion-label>
+            <ion-select formControlName="secondSq">
+              <ion-option value="test">test</ion-option>
+            </ion-select>
 					</ion-item>
-					<ion-item-divider color="primary">Password</ion-item-divider>
+          <ion-item>
+            <ion-label floating>Answer</ion-label>
+            <ion-input formControlName="secondAns" type="text"></ion-input>
+        	</ion-item>
+					<ion-item-divider color="primary">Third Security Question</ion-item-divider>
 					<ion-item>
-						<ion-label floating>Password</ion-label>
-						<ion-input formControlName="password" type="password"></ion-input>
-					</ion-item>
-					<ion-item>
-						<ion-label floating>Confirm password</ion-label>
-						<ion-input formControlName="confirmPassword" type="password"></ion-input>
-					</ion-item>
-					<ion-item-divider color="primary">Additional Information</ion-item-divider>
-					<ion-item>
-						<ion-label floating>Email</ion-label>
-						<ion-input formControlName="email" type="email"></ion-input>
-					</ion-item>
-					<ion-item>
-						<ion-label floating>Date</ion-label>
-						<ion-datetime displayFormat="MMM DD, YYYY" formControlName="dob"></ion-datetime>
+						<ion-label floating>Question</ion-label>
+            <ion-select formControlName="thirdSq">
+              <ion-option value="test">test</ion-option>
+            </ion-select>
+            <ion-item>
+              <ion-label floating>Answer</ion-label>
+              <ion-input formControlName="thirdAns" type="text"></ion-input>
+          	</ion-item>
 					</ion-item>
 				</form>
 			</ion-list>
-    <ion-slide>
-
     </ion-slide>
-
-    </ion-slides>
-
+    <ion-slide>
+      <ion-list>
+        <form>
+        <ion-item color="secondary">
+          <ion-thumbnail item-left>
+            <img *ngIf="imagesToUpload[0]" [src]="imagesToUpload[0]">
+            <img *ngIf="!imagesToUpload[0]" src="../../assets/img/defaultImage.gif">
+          </ion-thumbnail>
+          <input type="file" (change)="fileChangeEvent($event)"/>
+        </ion-item>
+				</form>
+			</ion-list>
+    </ion-slide>
+  </ion-slides>
 </ion-content>
 <ion-footer>
 			<ion-navbar color="secondary">

@@ -30,5 +30,10 @@ page-register-page {
 		.submit-btn{
 			background: color($colors, secondary);
 		}
+
+		ion-thumbnail img{
+			width: 200px;
+			height: 200px
+		}
 	}
 }

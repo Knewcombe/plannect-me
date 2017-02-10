@@ -20,12 +20,12 @@ export class EmailValidationService {
 		console.log(emailCheckURL);
 	}
 
-	public CheckEmail(control: FormControl){
+	public CheckEmail(email){
 		console.log("Testing this fucking shit")
-		let body = JSON.stringify(control.value);
+		let body = JSON.stringify(email);
 		let headers = new Headers({ 'Content-Type': 'application/json' });
 		let options = new RequestOptions({ headers: headers });
-		return new Promise(resolve => {
+		return Observable.create(observer => {
 			console.log("The fuck");
 			// At this point make a request to your backend to make a real check!
 			this.http.post(emailCheckURL, body, options)
@@ -34,10 +34,10 @@ export class EmailValidationService {
 					data =>  {
 						if(data != false){
 							console.log("Yes");
-							resolve(null);
+							observer.next(null);
 						}else{
 							console.log("Nope");
-							resolve(null);
+							observer.next({"email_taken": true});
 						}
 					},
 					err => {
