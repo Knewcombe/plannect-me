@@ -15,10 +15,15 @@
 <ion-content class="register-content">
 	<ion-row class="logo-row">
 		<ion-col width-100 text-center>
-			<h1 class="largtext">Welcome</h1>
+			<div id="status-buttons" class="text-center row">
+					<a [ngClass]="{active: currentIndex === 0}" ><span>1</span>Profile</a>
+					<a [ngClass]="{active: currentIndex === 1}"><span>2</span>Security</a>
+					<a [ngClass]="{active: currentIndex === 2}"><span>3</span>Pictures</a>
+					<a [ngClass]="{active: currentIndex === 3}"><span>4</span>Privacy</a>
+			</div>
 		</ion-col>
 	</ion-row>
-  <ion-slides #signupSlider>
+  <ion-slides #signupSlider (ionSlideDidChange)="slideChanged()">
   	<ion-slide>
 			<!-- <p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p> -->
 			<ion-list>
@@ -75,7 +80,10 @@
 					<ion-item>
 						<ion-label floating>Question</ion-label>
 						<ion-select formControlName="firstSq">
-              <ion-option value="test">test</ion-option>
+              <ion-option value="In what city were you born?">In what city were you born?</ion-option>
+							<ion-option value="What is your favorite movie?">What is your favorite movie?</ion-option>
+							<ion-option value="Where did your go to school?">Where did your go to school?</ion-option>
+							<ion-option value="What day were you born on?">What day were you born on?</ion-option>
             </ion-select>
 					</ion-item>
           <ion-item>
@@ -86,7 +94,10 @@
 					<ion-item>
 						<ion-label floating>Question</ion-label>
             <ion-select formControlName="secondSq">
-              <ion-option value="test">test</ion-option>
+              <ion-option value="First grade teachers name?">First grade teachers name?</ion-option>
+							<ion-option value="When is your anniversary">When is your anniversary</ion-option>
+							<ion-option value="Color of your first car?">Color of your first car?</ion-option>
+							<ion-option value="Your mothers maiden name?">Your mothers maiden name?</ion-option>
             </ion-select>
 					</ion-item>
           <ion-item>
@@ -97,29 +108,67 @@
 					<ion-item>
 						<ion-label floating>Question</ion-label>
             <ion-select formControlName="thirdSq">
-              <ion-option value="test">test</ion-option>
+              <ion-option value="What make was your first car?">What make was your first car?</ion-option>
+							<ion-option value="Your first pets name?">Your first pets name?</ion-option>
+							<ion-option value="What street did you grow up on?">What street did you grow up on?</ion-option>
+							<ion-option value="Who was your first employer?">Who was your first employer?</ion-option>
             </ion-select>
-            <ion-item>
-              <ion-label floating>Answer</ion-label>
-              <ion-input formControlName="thirdAns" type="text"></ion-input>
-          	</ion-item>
+					</ion-item>
+					<ion-item>
+						<ion-label floating>Answer</ion-label>
+						<ion-input formControlName="thirdAns" type="text"></ion-input>
 					</ion-item>
 				</form>
 			</ion-list>
     </ion-slide>
-    <ion-slide>
-      <ion-list>
-        <form>
-        <ion-item color="secondary">
-          <ion-thumbnail item-left>
-            <img *ngIf="imagesToUpload[0]" [src]="imagesToUpload[0]">
-            <img *ngIf="!imagesToUpload[0]" src="../../assets/img/defaultImage.gif">
-          </ion-thumbnail>
-          <input type="file" (change)="fileChangeEvent($event)"/>
-        </ion-item>
-				</form>
-			</ion-list>
+    <ion-slide class="cards-bg">
+        <ion-card color="secondary" *ngFor="let image of imgSrc; let i=index">
+						<img *ngIf="!image == '' " [src]="image">
+						<img *ngIf="image == '' " src="../../assets/img/defaultImage.gif">
+						<ion-card-content>
+							<button *ngIf="image == '' " ion-button color="primary" (click)="addImage(i)"><ion-icon name="camera"></ion-icon>Add</button>
+							<button *ngIf="!image == '' " ion-button color="primary" (click)="removeImage(i)"><ion-icon name="close"></ion-icon>Remove</button>
+						</ion-card-content>
+        </ion-card>
+				<input type="file" name="file" accept="image/*" style="display: none" (change)="fileChangeEvent($event)" #input>
     </ion-slide>
+		<ion-slide>
+			<form [formGroup]="slideThreeForm">
+				<ion-card>
+				  <ion-card-header class="wrapper">
+				    Would you like other members to rate your profile?
+				  </ion-card-header>
+				  <ion-card-content>
+				    <p><strong>Note</strong>: Turning off this feature will not allow other members to rate your profile.</p>
+						<ion-item>
+							<ion-toggle formControlName="rating"></ion-toggle>
+						</ion-item>
+				  </ion-card-content>
+				</ion-card>
+				<ion-card>
+				  <ion-card-header class="wrapper">
+				    Would you like other members to see your average rating?
+				  </ion-card-header>
+				  <ion-card-content>
+				    <p><strong>Note</strong>: Turning off this feature will not allow other members to see your average rating.</p>
+						<ion-item>
+							<ion-toggle formControlName="average"></ion-toggle>
+						</ion-item>
+				  </ion-card-content>
+				</ion-card>
+				<ion-card>
+				  <ion-card-header class="wrapper">
+				    Do you want to be seen in your country?
+				  </ion-card-header>
+				  <ion-card-content>
+				    <p><strong>Note</strong>: Turning off this feature will not allow other members to view your profile in your country.</p>
+						<ion-item>
+							<ion-toggle formControlName="average"></ion-toggle>
+						</ion-item>
+				  </ion-card-content>
+				</ion-card>
+			</form>
+		</ion-slide>
   </ion-slides>
 </ion-content>
 <ion-footer>

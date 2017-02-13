@@ -1,6 +1,8 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { Ng2FileInputModule } from 'ng2-file-input';
+
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { RegisterPage } from '../pages/register-page/register-page';
@@ -31,6 +33,7 @@ export const firebaseConfig = {
   ],
   imports: [
     IonicModule.forRoot(MyApp),
+		Ng2FileInputModule.forRoot(),
 		AngularFireModule.initializeApp(firebaseConfig)
   ],
   bootstrap: [IonicApp],
