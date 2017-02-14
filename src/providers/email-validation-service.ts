@@ -21,22 +21,18 @@ export class EmailValidationService {
 	}
 
 	public CheckEmail(email){
-		console.log("Testing this fucking shit")
-		let body = JSON.stringify(email);
+		let body = JSON.stringify({'email':email});
 		let headers = new Headers({ 'Content-Type': 'application/json' });
 		let options = new RequestOptions({ headers: headers });
 		return Observable.create(observer => {
-			console.log("The fuck");
 			// At this point make a request to your backend to make a real check!
 			this.http.post(emailCheckURL, body, options)
 				.map(res => res.json())
 				.subscribe(
 					data =>  {
 						if(data != false){
-							console.log("Yes");
 							observer.next(null);
 						}else{
-							console.log("Nope");
 							observer.next({"email_taken": true});
 						}
 					},

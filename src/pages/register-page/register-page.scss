@@ -56,7 +56,7 @@ page-register-page {
 			display:block;
 			height:30px;
 			margin:0 auto 10px;
-			padding-top:5px; width:30px;
+			padding-top:7px; width:30px;
 		  border-radius:50%;
 		}
 
@@ -76,6 +76,14 @@ page-register-page {
 	    height: 100%;
 	    max-width: 100%;
 	    max-height: 100%;
+		}
+
+		.invalid {
+			border: 1px solid color($colors, danger);
+    }
+
+		.error{
+			color: color($colors, danger);
 		}
 	}
 }

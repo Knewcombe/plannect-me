@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { FormGroup } from '@angular/forms';
 import {SERVER_URL} from './config';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
@@ -12,6 +13,8 @@ import 'rxjs/add/operator/map';
 */
 // let favorites = [],
 let loginURL = SERVER_URL + 'auth/authenticate'
+let authURL = SERVER_URL + 'auth/sign_up'
+let setQuesURL = SERVER_URL + 'auth/questions_add'
 
 
 export class UserInfo {
@@ -103,6 +106,90 @@ export class AuthService {
       });
     }
   }
+
+	public saveUser(firstGroup: FormGroup, secondGroup: FormGroup){
+		let body = JSON.stringify({
+			'firstName': firstGroup.controls['firstName'].value,
+			'lastName': firstGroup.controls['lastName'].value,
+			'password': firstGroup.controls['passwords'].get('firstPass').value,
+			'confirm_password': firstGroup.controls['passwords'].get('secondPass').value,
+			'gender':firstGroup.controls['gender'].value,
+			'country': firstGroup.controls['country'].value,
+			'dob': firstGroup.controls['dob'].value,
+			'email':firstGroup.controls['email'].value,
+			'options':{
+				'rating': secondGroup.controls['rating'].value,
+				'visiableRate': secondGroup.controls['visiableRate'].value,
+				'hidden': secondGroup.controls['hidden'].value
+			}
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(authURL, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						console.log(data);
+						if(data != false){
+							console.log("Yes");
+							observer.next(true);
+						}else{
+							console.log("Nope");
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
+
+	public setQuestions(user_id, group: FormGroup){
+		let body = JSON.stringify({
+			user_id: user_id,
+			questions:{
+				first:{
+					question: group.controls['firstSq'].value,
+					answer: group.controls['firstAns'].value
+				},
+				second:{
+					question: group.controls['secondSq'].value,
+					answer: group.controls['secondAns'].value
+				},
+				third:{
+					question: group.controls['thirdSq'].value,
+					answer: group.controls['thirdAns'].value
+				},
+			}
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(authURL, body, options)
+				.map(res => res.json())
+				.subscribe(
+					data =>  {
+						console.log(data);
+						if(data != false){
+							console.log("Yes");
+							observer.next(true);
+						}else{
+							console.log("Nope");
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
 
 	public getUserInfo() : UserInfo {
     return this.User;

@@ -19,7 +19,7 @@
 					<a [ngClass]="{active: currentIndex === 0}" ><span>1</span>Profile</a>
 					<a [ngClass]="{active: currentIndex === 1}"><span>2</span>Security</a>
 					<a [ngClass]="{active: currentIndex === 2}"><span>3</span>Pictures</a>
-					<a [ngClass]="{active: currentIndex === 3}"><span>4</span>Privacy</a>
+					<a [ngClass]="{active: currentIndex >= 3}"><span>4</span>Privacy</a>
 			</div>
 		</ion-col>
 	</ion-row>
@@ -27,48 +27,60 @@
   	<ion-slide>
 			<!-- <p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p> -->
 			<ion-list>
-    		<form [formGroup]="slideOneForm">
+    		<form #form="ngForm" [formGroup]="slideOneForm">
 					<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
-					<ion-item-divider color="primary">Name</ion-item-divider>
-        	<ion-item>
-            <ion-label floating>First Name</ion-label>
-            <ion-input formControlName="firstName" type="text"></ion-input>
-        	</ion-item>
-        	<ion-item>
-            <ion-label floating>Last Name</ion-label>
-            <ion-input formControlName="lastName" type="text"></ion-input>
-        	</ion-item>
-					<ion-item-divider color="primary">Password</ion-item-divider>
-					<ion-item>
-            <ion-label floating>Password</ion-label>
-            <ion-input formControlName="password" type="password"></ion-input>
-        	</ion-item>
-					<ion-item>
-            <ion-label floating>Confirm password</ion-label>
-            <ion-input formControlName="confirmPassword" type="password"></ion-input>
-        	</ion-item>
-					<ion-item-divider color="primary">Additional Information</ion-item-divider>
-					<ion-item>
-            <ion-label floating>Email</ion-label>
-            <ion-input formControlName="email" type="email" (blur)="onEmailChange($event.target.value)"></ion-input>
-        	</ion-item>
-        	<ion-item>
-						<ion-label floating>Date</ion-label>
-  					<ion-datetime displayFormat="MMM DD, YYYY" formControlName="dob"></ion-datetime>
-        	</ion-item>
-					<ion-item>
-						<ion-label floating>Gender</ion-label>
-							<ion-select formControlName="gender">
-								<ion-option value="M" checked="true">Male</ion-option>
-								<ion-option value="F">Female</ion-option>
-							</ion-select>
-        	</ion-item>
-					<ion-item>
-						<ion-label floating>Country</ion-label>
-							<ion-select formControlName="country">
-								<ion-option *ngFor="let item of countryList" [value]="item.alpha2">{{item.name}}</ion-option>
-							</ion-select>
-        	</ion-item>
+          <ion-card>
+  					<ion-item-divider color="secondary">Name</ion-item-divider>
+          	<ion-item>
+              <ion-label floating>First Name</ion-label>
+              <ion-input formControlName="firstName" type="text" [class.error]="!slideOneForm.controls.firstName.valid && (slideOneForm.controls.firstName.dirty || submitAttempt)"></ion-input>
+          	</ion-item>
+            <ion-item>
+              <ion-label floating>Last Name</ion-label>
+              <ion-input formControlName="lastName" type="text" [class.error]="!slideOneForm.controls.lastName.valid && (slideOneForm.controls.lastName.dirty || submitAttempt)"></ion-input>
+          	</ion-item>
+          </ion-card>
+          <ion-card [class.error]="!slideOneForm.controls.passwords.valid && (slideOneForm.controls.passwords.dirty || submitAttempt)" [formGroup]="slideOneForm.controls.passwords">
+  					<ion-item-divider color="secondary">Password</ion-item-divider>
+  					<ion-item>
+              <ion-label floating>Password</ion-label>
+              <ion-input formControlName="firstPass" type="password" [class.error]="!slideOneForm.controls.passwords.controls.firstPass.valid && (slideOneForm.controls.passwords.controls.firstPass.dirty || submitAttempt)"></ion-input>
+          	</ion-item>
+  					<ion-item>
+              <ion-label floating>Confirm password</ion-label>
+              <ion-input formControlName="secondPass" type="password" [class.error]="!slideOneForm.controls.passwords.controls.secondPass.valid && (slideOneForm.controls.passwords.controls.firstPass.dirty || submitAttempt)"></ion-input>
+          	</ion-item>
+            <ion-item class="error" *ngIf="!slideOneForm.controls.passwords.valid && (slideOneForm.controls.passwords.dirty || submitAttempt)">
+              <p>Passwords do not match, please try again</p>
+            </ion-item>
+          </ion-card>
+          <ion-card>
+  					<ion-item-divider color="secondary">Additional Information</ion-item-divider>
+  					<ion-item>
+              <ion-label floating>Email</ion-label>
+              <ion-input formControlName="email" type="email" (blur)="onEmailChange($event.target.value)" [class.error]="!slideOneForm.controls.email.valid && (slideOneForm.controls.email.dirty || submitAttempt)"></ion-input>
+          	</ion-item>
+            <ion-item *ngIf="!slideOneForm.controls.email.valid && (slideOneForm.controls.email.dirty || submitAttempt)">
+                <p>This email is already in use, please choose another.</p>
+            </ion-item>
+          	<ion-item>
+  						<ion-label floating>Date</ion-label>
+    					<ion-datetime displayFormat="MMM DD, YYYY" formControlName="dob" tabindex="-6" [class.error]="!slideOneForm.controls.dob.valid && (submitAttempt)"></ion-datetime>
+          	</ion-item>
+  					<ion-item>
+  						<ion-label floating>Gender</ion-label>
+  							<ion-select formControlName="gender" tabindex="-7" [class.error]="!slideOneForm.controls.gender.valid && (submitAttempt)">
+  								<ion-option value="M" checked="true">Male</ion-option>
+  								<ion-option value="F">Female</ion-option>
+  							</ion-select>
+          	</ion-item>
+  					<ion-item>
+  						<ion-label floating>Country</ion-label>
+  							<ion-select formControlName="country" tabindex="-8" [class.error]="!slideOneForm.controls.country.valid && (slideOneForm.controls.country.dirty || submitAttempt)">
+  								<ion-option *ngFor="let item of countryList" [value]="item.alpha2">{{item.name}}</ion-option>
+  							</ion-select>
+          	</ion-item>
+          </ion-card>
     		</form>
 			</ion-list>
     </ion-slide>
@@ -76,94 +88,100 @@
       <ion-list>
 				<form [formGroup]="slideTwoForm">
 					<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
-					<ion-item-divider color="primary">First Security Question</ion-item-divider>
-					<ion-item>
-						<ion-label floating>Question</ion-label>
-						<ion-select formControlName="firstSq">
-              <ion-option value="In what city were you born?">In what city were you born?</ion-option>
-							<ion-option value="What is your favorite movie?">What is your favorite movie?</ion-option>
-							<ion-option value="Where did your go to school?">Where did your go to school?</ion-option>
-							<ion-option value="What day were you born on?">What day were you born on?</ion-option>
-            </ion-select>
-					</ion-item>
-          <ion-item>
-            <ion-label floating>Answer</ion-label>
-            <ion-input formControlName="firstAns" type="text"></ion-input>
-        	</ion-item>
-          <ion-item-divider color="primary">Second Security Question</ion-item-divider>
-					<ion-item>
-						<ion-label floating>Question</ion-label>
-            <ion-select formControlName="secondSq">
-              <ion-option value="First grade teachers name?">First grade teachers name?</ion-option>
-							<ion-option value="When is your anniversary">When is your anniversary</ion-option>
-							<ion-option value="Color of your first car?">Color of your first car?</ion-option>
-							<ion-option value="Your mothers maiden name?">Your mothers maiden name?</ion-option>
-            </ion-select>
-					</ion-item>
-          <ion-item>
-            <ion-label floating>Answer</ion-label>
-            <ion-input formControlName="secondAns" type="text"></ion-input>
-        	</ion-item>
-					<ion-item-divider color="primary">Third Security Question</ion-item-divider>
-					<ion-item>
-						<ion-label floating>Question</ion-label>
-            <ion-select formControlName="thirdSq">
-              <ion-option value="What make was your first car?">What make was your first car?</ion-option>
-							<ion-option value="Your first pets name?">Your first pets name?</ion-option>
-							<ion-option value="What street did you grow up on?">What street did you grow up on?</ion-option>
-							<ion-option value="Who was your first employer?">Who was your first employer?</ion-option>
-            </ion-select>
-					</ion-item>
-					<ion-item>
-						<ion-label floating>Answer</ion-label>
-						<ion-input formControlName="thirdAns" type="text"></ion-input>
-					</ion-item>
+          <ion-card>
+  					<ion-item-divider color="secondary">First Security Question</ion-item-divider>
+  					<ion-item>
+  						<ion-label floating>Question</ion-label>
+  						<ion-select formControlName="firstSq" tabindex="-9" [class.error]="!slideTwoForm.controls.firstSq.valid && (submitAttempt)">
+                <ion-option value="In what city were you born?">In what city were you born?</ion-option>
+  							<ion-option value="What is your favorite movie?">What is your favorite movie?</ion-option>
+  							<ion-option value="Where did your go to school?">Where did your go to school?</ion-option>
+  							<ion-option value="What day were you born on?">What day were you born on?</ion-option>
+              </ion-select>
+  					</ion-item>
+            <ion-item>
+              <ion-label floating>Answer</ion-label>
+              <ion-input formControlName="firstAns" type="text" tabindex="-20" [class.error]="!slideTwoForm.controls.firstAns.valid && (slideTwoForm.controls.firstAns.dirty || submitAttempt)"></ion-input>
+          	</ion-item>
+          </ion-card>
+          <ion-card>
+            <ion-item-divider color="secondary">Second Security Question</ion-item-divider>
+  					<ion-item>
+  						<ion-label floating>Question</ion-label>
+              <ion-select formControlName="secondSq" tabindex="-11" [class.error]="!slideTwoForm.controls.secondSq.valid && (submitAttempt)">
+                <ion-option value="First grade teachers name?">First grade teachers name?</ion-option>
+  							<ion-option value="When is your anniversary">When is your anniversary</ion-option>
+  							<ion-option value="Color of your first car?">Color of your first car?</ion-option>
+  							<ion-option value="Your mothers maiden name?">Your mothers maiden name?</ion-option>
+              </ion-select>
+  					</ion-item>
+            <ion-item>
+              <ion-label floating>Answer</ion-label>
+              <ion-input formControlName="secondAns" type="text" tabindex="-19" [class.error]="!slideTwoForm.controls.secondAns.valid && (slideTwoForm.controls.secondAns.dirty || submitAttempt)"></ion-input>
+          	</ion-item>
+          </ion-card>
+          <ion-card>
+  					<ion-item-divider color="secondary">Third Security Question</ion-item-divider>
+  					<ion-item>
+  						<ion-label floating>Question</ion-label>
+              <ion-select formControlName="thirdSq" tabindex="-13" [class.error]="!slideTwoForm.controls.thirdSq.valid && (submitAttempt)">
+                <ion-option value="What make was your first car?">What make was your first car?</ion-option>
+  							<ion-option value="Your first pets name?">Your first pets name?</ion-option>
+  							<ion-option value="What street did you grow up on?">What street did you grow up on?</ion-option>
+  							<ion-option value="Who was your first employer?">Who was your first employer?</ion-option>
+              </ion-select>
+  					</ion-item>
+  					<ion-item>
+  						<ion-label floating>Answer</ion-label>
+  						<ion-input formControlName="thirdAns" type="text" tabindex="-18" [class.error]="!slideTwoForm.controls.thirdAns.valid && (slideTwoForm.controls.thirdAns.dirty || submitAttempt)"></ion-input>
+  					</ion-item>
+          </ion-card>
 				</form>
 			</ion-list>
     </ion-slide>
-    <ion-slide class="cards-bg">
-        <ion-card color="secondary" *ngFor="let image of imgSrc; let i=index">
+    <ion-slide>
+      <ion-grid>
+      <ion-row wrap>
+        <ion-col width-50 *ngFor="let image of imgSrc; let i=index">
+          <ion-card color="secondary">
 						<img *ngIf="!image == '' " [src]="image">
 						<img *ngIf="image == '' " src="../../assets/img/defaultImage.gif">
 						<ion-card-content>
-							<button *ngIf="image == '' " ion-button color="primary" (click)="addImage(i)"><ion-icon name="camera"></ion-icon>Add</button>
-							<button *ngIf="!image == '' " ion-button color="primary" (click)="removeImage(i)"><ion-icon name="close"></ion-icon>Remove</button>
+							<button *ngIf="image == '' " ion-button color="primary" (click)="addImage(i)" tabindex="-14"><ion-icon name="camera"></ion-icon>Add</button>
+							<button *ngIf="!image == '' " ion-button color="primary" (click)="removeImage(i)" tabindex="-15"><ion-icon name="close"></ion-icon>Remove</button>
 						</ion-card-content>
-        </ion-card>
-				<input type="file" name="file" accept="image/*" style="display: none" (change)="fileChangeEvent($event)" #input>
-    </ion-slide>
+          </ion-card>
+        </ion-col>
+				    <input type="file" name="file" accept="image/*" style="display: none" (change)="fileChangeEvent($event)" #input>
+        </ion-row>
+      </ion-grid>
+      </ion-slide>
 		<ion-slide>
 			<form [formGroup]="slideThreeForm">
 				<ion-card>
-				  <ion-card-header class="wrapper">
-				    Would you like other members to rate your profile?
-				  </ion-card-header>
+				  <ion-card-header class="wrapper">Would you like other members to rate your profile?</ion-card-header>
 				  <ion-card-content>
 				    <p><strong>Note</strong>: Turning off this feature will not allow other members to rate your profile.</p>
 						<ion-item>
-							<ion-toggle formControlName="rating"></ion-toggle>
+							<ion-toggle formControlName="rating" tabindex="-16"></ion-toggle>
 						</ion-item>
 				  </ion-card-content>
 				</ion-card>
 				<ion-card>
-				  <ion-card-header class="wrapper">
-				    Would you like other members to see your average rating?
-				  </ion-card-header>
+				  <ion-card-header class="wrapper">Would you like other members to see your average rating?</ion-card-header>
 				  <ion-card-content>
 				    <p><strong>Note</strong>: Turning off this feature will not allow other members to see your average rating.</p>
 						<ion-item>
-							<ion-toggle formControlName="average"></ion-toggle>
+							<ion-toggle formControlName="visiableRate" tabindex="-17"></ion-toggle>
 						</ion-item>
 				  </ion-card-content>
 				</ion-card>
 				<ion-card>
-				  <ion-card-header class="wrapper">
-				    Do you want to be seen in your country?
-				  </ion-card-header>
+				  <ion-card-header class="wrapper">Do you want to be seen in your country?</ion-card-header>
 				  <ion-card-content>
 				    <p><strong>Note</strong>: Turning off this feature will not allow other members to view your profile in your country.</p>
 						<ion-item>
-							<ion-toggle formControlName="average"></ion-toggle>
+							<ion-toggle formControlName="hidden" tabindex="-18"></ion-toggle>
 						</ion-item>
 				  </ion-card-content>
 				</ion-card>
@@ -177,7 +195,8 @@
 	        <button ion-button icon-left (click)="prev()"><ion-icon name="arrow-back"></ion-icon> Prev</button>
 	      </ion-buttons>
 	      <ion-buttons end>
-	        <button ion-button icon-right (click)="next()">Next <ion-icon name="arrow-forward"></ion-icon></button>
+	        <button *ngIf="currentIndex < 3" ion-button icon-right (click)="next()">Next <ion-icon name="arrow-forward"></ion-icon></button>
+          <button *ngIf="currentIndex >= 3" ion-button icon-right (click)="save()">Submit <ion-icon name="checkmark-circle-outline"></ion-icon></button>
 	      </ion-buttons>
 	    </ion-navbar>
 </ion-footer>

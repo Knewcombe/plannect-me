@@ -1,7 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
-import { Ng2FileInputModule } from 'ng2-file-input';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -32,8 +31,16 @@ export const firebaseConfig = {
 		AboutPage
   ],
   imports: [
-    IonicModule.forRoot(MyApp),
-		Ng2FileInputModule.forRoot(),
+    IonicModule.forRoot(MyApp, {
+        platforms : {
+          ios : {
+            // These options are available in ionic-angular@2.0.0-beta.2 and up.
+            scrollAssist: false,    // Valid options appear to be [true, false]
+            autoFocusAssist: false  // Valid options appear to be ['instant', 'delay', false]
+          }
+          // http://ionicframework.com/docs/v2/api/config/Config/)
+        }
+      }),
 		AngularFireModule.initializeApp(firebaseConfig)
   ],
   bootstrap: [IonicApp],
