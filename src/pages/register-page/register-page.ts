@@ -2,12 +2,14 @@ import { Component, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { NavController, AlertController, LoadingController, Loading } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../providers/auth-service';
+import { ImageService } from '../../providers/image-service';
 import { CountryService } from '../../providers/country-service';
 import { EmailValidationService } from '../../providers/email-validation-service';
 import { AgeValidator } from '../../providers/age_validation';
 import { PassValidator } from '../../providers/pass_validation'
 
 import { HomePage } from '../../pages/home/home';
+import { DashboardPage } from '../../pages/dashboard/dashboard';
 
 /*
   Generated class for the RegisterPage page.
@@ -20,7 +22,7 @@ import { HomePage } from '../../pages/home/home';
 @Component({
   selector: 'page-register-page',
   templateUrl: 'register-page.html',
-	providers: [AuthService, CountryService, EmailValidationService]
+	providers:[EmailValidationService, PassValidator, AgeValidator, ImageService]
 })
 
 
@@ -36,11 +38,12 @@ export class RegisterPage {
     imgSrc = [];
 		imgIndex = 0;
 		currentIndex = 0;
+		imgUpload = [];
 
     submitAttempt: boolean = false;
 
     constructor(private renderer: Renderer, public formBuilder: FormBuilder, private navCtrl: NavController,  private loadingCtrl: LoadingController,
-		private auth: AuthService, private country: CountryService, private emailVal: EmailValidationService, private alertCtrl: AlertController) {
+		private auth: AuthService, private image: ImageService, private country: CountryService, private emailVal: EmailValidationService, private alertCtrl: AlertController) {
 
 			this.countryList = country.getCountryList();
 
@@ -116,16 +119,27 @@ export class RegisterPage {
               email: this.slideOneForm.controls['email'].value,
               password: this.slideOneForm.controls['passwords'].get('firstPass').value
             };
+						console.log(loginCredentials);
             this.auth.login(loginCredentials).subscribe(data =>{
               if(data == true){
                 this.auth.setQuestions(this.auth.User.user_id, this.slideTwoForm).subscribe(data => {
                   if(data == true){
-                    // this.loading.dismiss();
+										for(let image of this.imgSrc) {
+											console.log(image)
+  										if(image != ''){
+												this.imgUpload.push(image);
+											}
+										}
+										this.image.uploadImages(this.auth.tokenInfo, this.auth.Profile.profile_id, this.imgUpload).subscribe(data => {
+											if(data == true){
+												this.loading.dismiss();
+												this.navCtrl.setRoot(DashboardPage);
+											}
+										})
                   }else{
                     this.showError("Access Denied");
                   }
                 })
-                // this.nav.setRoot(HomePage)
               }else{
         				this.showError("Access Denied");
         			}

@@ -75,6 +75,7 @@ export class AuthService {
   }
 
 	public login(credentials) {
+		console.log(credentials);
     if (credentials.email === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
@@ -170,7 +171,7 @@ export class AuthService {
 		let options = new RequestOptions({ headers: headers });
 		return Observable.create(observer => {
 			// At this point make a request to your backend to make a real check!
-			this.http.post(authURL, body, options)
+			this.http.post(setQuesURL, body, options)
 				.map(res => res.json())
 				.subscribe(
 					data =>  {

@@ -3,8 +3,11 @@ import { App, Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen, Keyboard } from 'ionic-native';
 import { HomePage } from '../pages/home/home';
 
+import { AuthService } from '../providers/auth-service';
+import { CountryService } from '../providers/country-service';
+
 @Component({
-  templateUrl: 'app.html',
+  templateUrl: 'app.html'
 })
 
 export class MyApp {

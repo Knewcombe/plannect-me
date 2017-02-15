@@ -6,9 +6,14 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { RegisterPage } from '../pages/register-page/register-page';
 import { AboutPage } from '../pages/about/about';
+import { DashboardPage } from '../pages/dashboard/dashboard';
+import { ProfilePage } from '../pages/profile/profile';
+import { FavouitesPage } from '../pages/favouites/favouites';
+import { StatsPage } from '../pages/stats/stats';
 
 //Services
 import { AuthService } from '../providers/auth-service';
+import { CountryService } from '../providers/country-service';
 // Import the AF2 Module
 import { AngularFireModule } from 'angularfire2';
 
@@ -28,7 +33,11 @@ export const firebaseConfig = {
     MyApp,
     HomePage,
 		RegisterPage,
-		AboutPage
+		AboutPage,
+		DashboardPage,
+		ProfilePage,
+		FavouitesPage,
+		StatsPage
   ],
   imports: [
     IonicModule.forRoot(MyApp, {
@@ -39,8 +48,9 @@ export const firebaseConfig = {
             autoFocusAssist: false  // Valid options appear to be ['instant', 'delay', false]
           }
           // http://ionicframework.com/docs/v2/api/config/Config/)
-        }
-      }),
+				}
+			}
+		),
 		AngularFireModule.initializeApp(firebaseConfig)
   ],
   bootstrap: [IonicApp],
@@ -48,8 +58,12 @@ export const firebaseConfig = {
 		MyApp,
 		HomePage,
 		RegisterPage,
-		AboutPage
+		AboutPage,
+		DashboardPage,
+		ProfilePage,
+		FavouitesPage,
+		StatsPage
   ],
-  providers: [AuthService]
+	providers:[AuthService, CountryService]
 })
 export class AppModule {}

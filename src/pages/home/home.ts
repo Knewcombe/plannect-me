@@ -3,11 +3,11 @@ import { NavController, AlertController, LoadingController, Loading } from 'ioni
 import { AuthService } from '../../providers/auth-service';
 import { RegisterPage } from '../register-page/register-page';
 import { AboutPage } from '../about/about';
+import { DashboardPage } from '../../pages/dashboard/dashboard';
 
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html',
-	providers: [AuthService]
+  templateUrl: 'home.html'
 })
 export class HomePage {
 	loading: Loading;
@@ -29,7 +29,7 @@ export class HomePage {
     this.auth.login(this.loginCredentials).subscribe(data => {
       if (data == true) {
         this.loading.dismiss();
-        // this.nav.setRoot(HomePage)
+        this.navCtrl.setRoot(DashboardPage);
       }else{
 				this.showError("Access Denied");
 			}

@@ -1,0 +1,105 @@
+<!--
+  Generated template for the Profile page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+    <ion-navbar color="secondary">
+      <ion-title>
+        Profile
+      </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding class="profile-content">
+	<ion-list>
+		<form #form="ngForm" [formGroup]="userForm">
+			<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
+			<ion-card>
+				<ion-item-divider color="secondary">User Information</ion-item-divider>
+				<ion-item>
+					<ion-label floating>First Name</ion-label>
+					<ion-input formControlName="firstName" type="text" [class.error]="!userForm.controls.firstName.valid && (userForm.controls.firstName.dirty || submitAttempt)"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Last Name</ion-label>
+					<ion-input formControlName="lastName" type="text" [class.error]="!userForm.controls.lastName.valid && (userForm.controls.lastName.dirty || submitAttempt)"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Email</ion-label>
+					<ion-input formControlName="email" type="email" (blur)="onEmailChange($event.target.value)" [class.error]="!userForm.controls.email.valid && (userForm.controls.email.dirty || submitAttempt)"></ion-input>
+				</ion-item>
+				<ion-item *ngIf="!userForm.controls.email.valid && (userForm.controls.email.dirty || submitAttempt)">
+						<p>This email is already in use, please choose another.</p>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Date</ion-label>
+					<ion-datetime displayFormat="MMM DD, YYYY" formControlName="dob" tabindex="-6" [class.error]="!userForm.controls.dob.valid && (submitAttempt)"></ion-datetime>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Gender</ion-label>
+						<ion-select formControlName="gender" tabindex="-7" [class.error]="!userForm.controls.gender.valid && (submitAttempt)">
+							<ion-option value="M" checked="true">Male</ion-option>
+							<ion-option value="F">Female</ion-option>
+						</ion-select>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>Country</ion-label>
+						<ion-select formControlName="country" tabindex="-8" [class.error]="!userForm.controls.country.valid && (userForm.controls.country.dirty || submitAttempt)">
+							<ion-option *ngFor="let item of countryList" [value]="item.alpha2">{{item.name}}</ion-option>
+						</ion-select>
+				</ion-item>
+			</ion-card>
+		</form>
+	</ion-list>
+	<ion-list>
+		<form #form="ngForm" [formGroup]="passwordForm">
+			<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
+			<ion-card>
+				<ion-item-divider color="secondary">Change Password</ion-item-divider>
+				<ion-item>
+					<ion-label floating>Old Password</ion-label>
+					<ion-input formControlName="oldPassword" type="password" [class.error]="!passwordForm.controls.oldPassword.valid && (passwordForm.controls.oldPassword.dirty || submitAttempt)"></ion-input>
+				</ion-item>
+				<div [formGroup]="passwordForm.controls.newPasswords">
+					<ion-item>
+						<ion-label floating>New Password</ion-label>
+						<ion-input formControlName="firstPass" type="password" [class.error]="!passwordForm.controls.newPasswords.controls.firstPass.valid && (passwordForm.controls.newPasswords.controls.firstPass.dirty || submitAttempt)"></ion-input>
+					</ion-item>
+					<ion-item>
+						<ion-label floating>Confirm Password</ion-label>
+						<ion-input formControlName="secondPass" type="password" [class.error]="!passwordForm.controls.newPasswords.controls.secondPass.valid && (passwordForm.controls.newPasswords.controls.secondPass.dirty || submitAttempt)"></ion-input>
+					</ion-item>
+				</div>
+			</ion-card>
+		</form>
+	</ion-list>
+	<ion-list>
+		<form [formGroup]="UserOptionsForm">
+			<ion-card>
+				<ion-card-header class="wrapper">Would you like other members to rate your profile?</ion-card-header>
+				<ion-card-content>
+					<p><strong>Note</strong>: Turning off this feature will not allow other members to rate your profile.</p>
+					<ion-item>
+						<ion-toggle formControlName="rating" tabindex="-16"></ion-toggle>
+					</ion-item>
+				</ion-card-content>
+				<ion-card-header class="wrapper">Would you like other members to see your average rating?</ion-card-header>
+				<ion-card-content>
+					<p><strong>Note</strong>: Turning off this feature will not allow other members to see your average rating.</p>
+					<ion-item>
+						<ion-toggle formControlName="visiableRate" tabindex="-17"></ion-toggle>
+					</ion-item>
+				</ion-card-content>
+				<ion-card-header class="wrapper">Do you want to be seen in your country?</ion-card-header>
+				<ion-card-content>
+					<p><strong>Note</strong>: Turning off this feature will not allow other members to view your profile in your country.</p>
+					<ion-item>
+						<ion-toggle formControlName="hidden" tabindex="-18"></ion-toggle>
+					</ion-item>
+				</ion-card-content>
+			</ion-card>
+		</form>
+	</ion-list>
+</ion-content>
