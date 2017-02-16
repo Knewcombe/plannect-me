@@ -12,8 +12,10 @@ import { FavouitesPage } from '../pages/favouites/favouites';
 import { StatsPage } from '../pages/stats/stats';
 
 //Services
-import { AuthService } from '../providers/auth-service';
 import { CountryService } from '../providers/country-service';
+import { User } from '../providers/user'
+import { Member } from '../providers/member'
+import { ImageService } from '../providers/image-service'
 // Import the AF2 Module
 import { AngularFireModule } from 'angularfire2';
 
@@ -64,6 +66,6 @@ export const firebaseConfig = {
 		FavouitesPage,
 		StatsPage
   ],
-	providers:[AuthService, CountryService]
+	providers:[User, Member, CountryService, ImageService]
 })
 export class AppModule {}

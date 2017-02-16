@@ -7,7 +7,8 @@ import { DashboardPage } from '../../pages/dashboard/dashboard';
 
 @Component({
   selector: 'page-home',
-  templateUrl: 'home.html'
+  templateUrl: 'home.html',
+  providers:[AuthService]
 })
 export class HomePage {
 	loading: Loading;
@@ -47,10 +48,7 @@ export class HomePage {
 	}
 
 	showError(text) {
-    setTimeout(() => {
-      this.loading.dismiss();
-    });
-
+    this.loading.dismiss();
     let alert = this.alertCtrl.create({
       title: 'Fail',
       subTitle: text,

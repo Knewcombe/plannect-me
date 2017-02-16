@@ -5,6 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 let imageUpload = SERVER_URL + 'api/profiles/upload-base';
+let downloadURL = SERVER_URL + 'api/profiles/download';
 
 export class Images {
 
@@ -23,7 +24,7 @@ export class ImageService {
 	Image: Images;
 
   constructor(public http: Http) {
-    // console.log(loginURL);
+    console.log("Images");
   }
 
 	public uploadImages(tokenInfo, profileId, imageArray){
@@ -43,6 +44,7 @@ export class ImageService {
 				.subscribe(
 					data =>  {
 						if(data != false){
+							console.log(data);
 							console.log("Yes");
 							observer.next(true);
 						}else{
@@ -52,10 +54,39 @@ export class ImageService {
 						observer.complete();
 					},
 					err => {
+						observer.error('Unable to connect, please check connection');
 						console.log("ERROR!: ", err);
 					}
 				);
 		});
+	}
+
+	public downloadImages(tokenInfo, profileId){
+
+		let body = JSON.stringify({profileId: profileId});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(downloadURL+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+				.map(res => res.json())
+				.subscribe(
+					data =>  {
+						if(data != false){
+							observer.next(data[1].data);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+
 	}
 
 	// public removeImages(imageId){

@@ -11,6 +11,8 @@ import { PassValidator } from '../../providers/pass_validation'
 import { HomePage } from '../../pages/home/home';
 import { DashboardPage } from '../../pages/dashboard/dashboard';
 
+import { User } from '../../providers/user'
+
 /*
   Generated class for the RegisterPage page.
 
@@ -22,7 +24,7 @@ import { DashboardPage } from '../../pages/dashboard/dashboard';
 @Component({
   selector: 'page-register-page',
   templateUrl: 'register-page.html',
-	providers:[EmailValidationService, PassValidator, AgeValidator, ImageService]
+	providers:[AuthService, EmailValidationService, PassValidator, AgeValidator, ImageService]
 })
 
 
@@ -43,7 +45,7 @@ export class RegisterPage {
     submitAttempt: boolean = false;
 
     constructor(private renderer: Renderer, public formBuilder: FormBuilder, private navCtrl: NavController,  private loadingCtrl: LoadingController,
-		private auth: AuthService, private image: ImageService, private country: CountryService, private emailVal: EmailValidationService, private alertCtrl: AlertController) {
+		private auth: AuthService, private image: ImageService, private country: CountryService, private emailVal: EmailValidationService, private alertCtrl: AlertController, private user: User) {
 
 			this.countryList = country.getCountryList();
 
@@ -122,7 +124,7 @@ export class RegisterPage {
 						console.log(loginCredentials);
             this.auth.login(loginCredentials).subscribe(data =>{
               if(data == true){
-                this.auth.setQuestions(this.auth.User.user_id, this.slideTwoForm).subscribe(data => {
+                this.auth.setQuestions(this.user.getUserId(), this.slideTwoForm).subscribe(data => {
                   if(data == true){
 										for(let image of this.imgSrc) {
 											console.log(image)
@@ -130,7 +132,7 @@ export class RegisterPage {
 												this.imgUpload.push(image);
 											}
 										}
-										this.image.uploadImages(this.auth.tokenInfo, this.auth.Profile.profile_id, this.imgUpload).subscribe(data => {
+										this.image.uploadImages(this.user.getToken(), this.user.getProfileId(), this.imgUpload).subscribe(data => {
 											if(data == true){
 												this.loading.dismiss();
 												this.navCtrl.setRoot(DashboardPage);

@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Component } from '@angular/core';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { FormGroup } from '@angular/forms';
-import {SERVER_URL} from './config';
-import {Observable} from 'rxjs/Observable';
+import { SERVER_URL } from './config';
+import { Observable } from 'rxjs/Observable';
+import { User, UserInfo, ProfileInfo, TokenInfo } from '../providers/user'
+import { ImageService, Images } from '../providers/image-service'
 import 'rxjs/add/operator/map';
 
 /*
@@ -15,62 +17,13 @@ import 'rxjs/add/operator/map';
 let loginURL = SERVER_URL + 'auth/authenticate'
 let authURL = SERVER_URL + 'auth/sign_up'
 let setQuesURL = SERVER_URL + 'auth/questions_add'
+let UserUpdateURL = SERVER_URL + 'api/users/update_user'
 
-
-export class UserInfo {
-	date_of_birth:string;
-	first_name:string;
-	last_name:string;
-	profile_id: string;
-	user_email: string;
-	user_id: string;
-
-  constructor(date_of_birth: string, first_name: string, last_name: string, profile_id: string, user_email: string, user_id: string) {
-		this.date_of_birth = date_of_birth;
-		this.first_name = first_name;
-		this.last_name = last_name;
-		this.profile_id = profile_id;
-		this.user_email = user_email;
-		this.user_id = user_id;
-  }
-}
-
-export class TokenInfo {
-	token: string;
-	tokenRefresh:boolean;
-
-  constructor(token: string, tokenRefresh: boolean) {
-		this.token = token;
-		this.tokenRefresh = tokenRefresh;
-  }
-}
-
-export class ProfileInfo {
-
-	allow_rating:number;
-	country:string;
-	gender:string;
-	hidden:number;
-	profile_id:string;
-	visable_rating:number;
-
-  constructor(allow_rating:number, country:string, gender:string, hidden:number, profile_id:string, visable_rating:number) {
-		this.allow_rating = allow_rating;
-		this.country = country;
-		this.gender = gender;
-		this.hidden = hidden;
-		this.profile_id = profile_id;
-		this.visable_rating = visable_rating;
-  }
-}
 
 @Injectable()
 export class AuthService {
-	User: UserInfo;
-	Profile: ProfileInfo;
-	tokenInfo: TokenInfo;
 
-  constructor(public http: Http) {
+  constructor(public http: Http, private user: User, private image: ImageService) {
     // console.log(loginURL);
   }
 
@@ -90,17 +43,30 @@ export class AuthService {
 						data =>  {
 							if(data != false){
 								console.log("Yes");
-								this.User = new UserInfo(data.userInfo.date_of_birth, data.userInfo.first_name, data.userInfo.last_name, data.userInfo.profile_id, data.userInfo.user_email, data.userInfo.user_id);
-								this.Profile = new ProfileInfo(data.profile.allow_rating, data.profile.country, data.profile.gender, data.profile.hidden, data.profile.profile_id, data.profile.visable_rating);
-								this.tokenInfo = new TokenInfo(data.tokenInfo.token, data.tokenInfo.tokenRefresh);
-								observer.next(true);
+								this.user.setUser(new UserInfo(data.userInfo.date_of_birth, data.userInfo.first_name, data.userInfo.last_name, data.userInfo.profile_id, data.userInfo.user_email, data.userInfo.user_id));
+								this.user.setProfile(new ProfileInfo(data.profile.allow_rating, data.profile.country, data.profile.gender, data.profile.hidden, data.profile.profile_id, data.profile.visable_rating));
+								this.user.setTokenInfo(new TokenInfo(data.tokenInfo.token, data.tokenInfo.tokenRefresh));
+								this.image.downloadImages(this.user.getToken(), this.user.getProfileId()).subscribe(data =>{
+									if(data != false){
+										if(data.length != 0){
+											for (let image of data) {
+													this.user.setImage(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image));
+											}
+										}
+										console.log("test");
+										observer.next(true);
+									}else{
+										observer.next(false);
+									}
+									observer.complete();
+								});
 							}else{
 								console.log("Nope");
 								observer.next(false);
 							}
-							observer.complete();
 						},
 						err => {
+							observer.error('Unable to connect, please check connection');
 							console.log("ERROR!: ", err);
 						}
 					);
@@ -143,6 +109,7 @@ export class AuthService {
 						observer.complete();
 					},
 					err => {
+						observer.error('Unable to connect, please check connection');
 						console.log("ERROR!: ", err);
 					}
 				);
@@ -186,22 +153,57 @@ export class AuthService {
 						observer.complete();
 					},
 					err => {
+						observer.error('Unable to connect, please check connection');
 						console.log("ERROR!: ", err);
 					}
 				);
 		});
 	}
 
-	public getUserInfo() : UserInfo {
-    return this.User;
-  }
+	public updateUserInfo(tokenInfo:TokenInfo, userId, profileId, UserFormGroup: FormGroup){
 
-	public getProfile() : ProfileInfo {
-    return this.Profile;
-  }
+			let body = JSON.stringify({
+				'userId': userId,
+				'profileId': profileId,
+				'firstName': UserFormGroup.controls['firstName'].value,
+				'lastName': UserFormGroup.controls['lastName'].value,
+				'gender': UserFormGroup.controls['gender'].value,
+				'country': UserFormGroup.controls['country'].value,
+				'email': UserFormGroup.controls['email'].value,
+				'options':{
+					'rating': UserFormGroup.controls['rating'].value,
+					'visiableRate': UserFormGroup.controls['visiableRate'].value,
+					'hidden': UserFormGroup.controls['hidden'].value
+				}
 
-	public getToken() : TokenInfo{
-		return this.tokenInfo;
+			});
+      let headers = new Headers({ 'Content-Type': 'application/json' });
+      let options = new RequestOptions({ headers: headers });
+			return Observable.create(observer => {
+				// At this point make a request to your backend to make a real check!
+				this.http.post(UserUpdateURL+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+					.map((res:Response) => res.json())
+					.subscribe(
+						data =>  {
+							console.log(data);
+							if(data != false){
+								console.log("Yes");
+								// this.user.updateToken(data[0].token);
+								this.user.setUser(new UserInfo(data[1].data.userInfo.date_of_birth, data[1].data.userInfo.first_name, data[1].data.userInfo.last_name, data[1].data.userInfo.profile_id, data[1].data.userInfo.user_email, data[1].data.userInfo.user_id));
+								this.user.setProfile(new ProfileInfo(data[1].data.profile.allow_rating, data[1].data.profile.country, data[1].data.profile.gender, data[1].data.profile.hidden, data[1].data.profile.profile_id, data[1].data.profile.visable_rating));
+								observer.next(true);
+							}else{
+								console.log("Nope");
+								observer.next(false);
+							}
+							observer.complete();
+						},
+						err => {
+							observer.error('Unable to connect, please check connection');
+							console.log("ERROR!: ", err);
+						}
+					);
+			});
 	}
 
 	public register(credentials) {

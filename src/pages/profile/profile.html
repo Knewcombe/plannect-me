@@ -15,7 +15,7 @@
 <ion-content padding class="profile-content">
 	<ion-list>
 		<form #form="ngForm" [formGroup]="userForm">
-			<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
+			<p *ngIf="submitAttempt && !userForm.valid" style="color: #ea6153;">Please fill out all details accurately.</p>
 			<ion-card>
 				<ion-item-divider color="secondary">User Information</ion-item-divider>
 				<ion-item>
@@ -34,10 +34,6 @@
 						<p>This email is already in use, please choose another.</p>
 				</ion-item>
 				<ion-item>
-					<ion-label floating>Date</ion-label>
-					<ion-datetime displayFormat="MMM DD, YYYY" formControlName="dob" tabindex="-6" [class.error]="!userForm.controls.dob.valid && (submitAttempt)"></ion-datetime>
-				</ion-item>
-				<ion-item>
 					<ion-label floating>Gender</ion-label>
 						<ion-select formControlName="gender" tabindex="-7" [class.error]="!userForm.controls.gender.valid && (submitAttempt)">
 							<ion-option value="M" checked="true">Male</ion-option>
@@ -50,6 +46,33 @@
 							<ion-option *ngFor="let item of countryList" [value]="item.alpha2">{{item.name}}</ion-option>
 						</ion-select>
 				</ion-item>
+        <ion-item-divider color="secondary">Security Options</ion-item-divider>
+        <ion-item>
+          <ion-card>
+    				<ion-card-header class="wrapper">Would you like other members to rate your profile?</ion-card-header>
+    				<ion-card-content class="wrapper">
+    					<p><strong>Note</strong>: Turning off this feature will not allow other members to rate your profile.</p>
+    					<ion-item>
+    						<ion-toggle formControlName="rating" tabindex="-16"></ion-toggle>
+    					</ion-item>
+    				</ion-card-content>
+    				<ion-card-header class="wrapper">Would you like other members to see your average rating?</ion-card-header>
+    				<ion-card-content class="wrapper"t>
+    					<p><strong>Note</strong>: Turning off this feature will not allow other members to see your average rating.</p>
+    					<ion-item>
+    						<ion-toggle formControlName="visiableRate" tabindex="-17"></ion-toggle>
+    					</ion-item>
+    				</ion-card-content>
+    				<ion-card-header class="wrapper">Do you want to be seen in your country?</ion-card-header>
+    				<ion-card-content class="wrapper">
+    					<p><strong>Note</strong>: Turning off this feature will not allow other members to view your profile in your country.</p>
+    					<ion-item>
+    						<ion-toggle formControlName="hidden" tabindex="-18"></ion-toggle>
+    					</ion-item>
+    				</ion-card-content>
+    			</ion-card>
+        </ion-item>
+        <button ion-button icon-right (click)="saveUser()">Save <ion-icon name="checkmark-circle-outline"></ion-icon></button>
 			</ion-card>
 		</form>
 	</ion-list>
@@ -72,34 +95,28 @@
 						<ion-input formControlName="secondPass" type="password" [class.error]="!passwordForm.controls.newPasswords.controls.secondPass.valid && (passwordForm.controls.newPasswords.controls.secondPass.dirty || submitAttempt)"></ion-input>
 					</ion-item>
 				</div>
+        <button ion-button icon-right (click)="savePassword()">Save <ion-icon name="checkmark-circle-outline"></ion-icon></button>
 			</ion-card>
 		</form>
 	</ion-list>
-	<ion-list>
-		<form [formGroup]="UserOptionsForm">
-			<ion-card>
-				<ion-card-header class="wrapper">Would you like other members to rate your profile?</ion-card-header>
-				<ion-card-content>
-					<p><strong>Note</strong>: Turning off this feature will not allow other members to rate your profile.</p>
-					<ion-item>
-						<ion-toggle formControlName="rating" tabindex="-16"></ion-toggle>
-					</ion-item>
-				</ion-card-content>
-				<ion-card-header class="wrapper">Would you like other members to see your average rating?</ion-card-header>
-				<ion-card-content>
-					<p><strong>Note</strong>: Turning off this feature will not allow other members to see your average rating.</p>
-					<ion-item>
-						<ion-toggle formControlName="visiableRate" tabindex="-17"></ion-toggle>
-					</ion-item>
-				</ion-card-content>
-				<ion-card-header class="wrapper">Do you want to be seen in your country?</ion-card-header>
-				<ion-card-content>
-					<p><strong>Note</strong>: Turning off this feature will not allow other members to view your profile in your country.</p>
-					<ion-item>
-						<ion-toggle formControlName="hidden" tabindex="-18"></ion-toggle>
-					</ion-item>
-				</ion-card-content>
-			</ion-card>
-		</form>
-	</ion-list>
+  <ion-list>
+    <ion-card>
+      <ion-grid>
+      <ion-row wrap>
+        <ion-col width-50 *ngFor="let image of imgSrc; let i=index">
+          <ion-card color="secondary">
+						<img *ngIf="!image.imageBase64 == '' " [src]="image.imageBase64">
+						<img *ngIf="image.imageBase64 == '' " src="../../assets/img/defaultImage.gif">
+						<ion-card-content>
+							<button *ngIf="image.imageBase64 == '' " ion-button color="primary" (click)="addImage(i)" tabindex="-14"><ion-icon name="camera"></ion-icon>Add</button>
+							<button *ngIf="!image.imageBase64 == '' " ion-button color="primary" (click)="removeImage(i)" tabindex="-15"><ion-icon name="close"></ion-icon>Remove</button>
+						</ion-card-content>
+          </ion-card>
+        </ion-col>
+				    <input type="file" name="file" accept="image/*" style="display: none" (change)="fileChangeEvent($event)" #input>
+        </ion-row>
+      </ion-grid>
+      <button ion-button icon-right (click)="saveImage()">Save <ion-icon name="checkmark-circle-outline"></ion-icon></button>
+    </ion-card>
+  </ion-list>
 </ion-content>

@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController, LoadingController, Loading, MenuController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from '../../providers/auth-service';
 import { ImageService } from '../../providers/image-service';
 import { CountryService } from '../../providers/country-service';
 
@@ -21,7 +20,7 @@ import { StatsPage } from '../../pages/stats/stats';
 })
 export class DashboardPage {
 
-  constructor(public navCtrl: NavController, public menuCtrl: MenuController, public auth: AuthService) {}
+  constructor(public navCtrl: NavController, public menuCtrl: MenuController) {}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad DashboardPage');
