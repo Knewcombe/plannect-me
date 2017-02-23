@@ -18,6 +18,11 @@ let loginURL = SERVER_URL + 'auth/authenticate'
 let authURL = SERVER_URL + 'auth/sign_up'
 let setQuesURL = SERVER_URL + 'auth/questions_add'
 let UserUpdateURL = SERVER_URL + 'api/users/update_user'
+let UpdatePassURL = SERVER_URL + 'api/users/change_password'
+let GetQuestionsURl = SERVER_URL + 'auth/questions_get'
+let AnswerQuestionURL = SERVER_URL + 'auth/answer_questions'
+let ChangePassword = SERVER_URL + 'auth/forgot_change_password'
+let GetUserURL = SERVER_URL + 'api/profiles/get_users_info'
 
 
 @Injectable()
@@ -27,7 +32,7 @@ export class AuthService {
     // console.log(loginURL);
   }
 
-	public login(credentials) {
+	public login(credentials, keeploggedin) {
 		console.log(credentials);
     if (credentials.email === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
@@ -45,19 +50,41 @@ export class AuthService {
 								console.log("Yes");
 								this.user.setUser(new UserInfo(data.userInfo.date_of_birth, data.userInfo.first_name, data.userInfo.last_name, data.userInfo.profile_id, data.userInfo.user_email, data.userInfo.user_id));
 								this.user.setProfile(new ProfileInfo(data.profile.allow_rating, data.profile.country, data.profile.gender, data.profile.hidden, data.profile.profile_id, data.profile.visable_rating));
-								this.user.setTokenInfo(new TokenInfo(data.tokenInfo.token, data.tokenInfo.tokenRefresh));
+								this.user.setTokenInfo(new TokenInfo(data.tokenInfo.token, keeploggedin));
 								this.image.downloadImages(this.user.getToken(), this.user.getProfileId()).subscribe(data =>{
 									if(data != false){
 										if(data.length != 0){
 											for (let image of data) {
-													this.user.setImage(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image));
+													this.user.setImage(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image, false));
 											}
 										}
-										console.log("test");
-										observer.next(true);
-									}else{
-										observer.next(false);
 									}
+									if(keeploggedin){
+										window.sessionStorage.removeItem('user');
+										window.sessionStorage.removeItem('token');
+										window.localStorage.setItem('user', JSON.stringify({
+											user: {
+												userInfo: this.user.getUserInfo(),
+												profileInfo: this.user.getProfile(),
+											}
+										}))
+										window.localStorage.setItem('token', JSON.stringify({
+												tokenInfo: this.user.getToken()
+										}))
+									}else{
+										window.localStorage.removeItem('user');
+										window.localStorage.removeItem('token');
+										window.sessionStorage.setItem('user', JSON.stringify({
+											user: {
+												userInfo: this.user.getUserInfo(),
+												profileInfo: this.user.getProfile()
+											}
+										}))
+										window.sessionStorage.setItem('token', JSON.stringify({
+												tokenInfo: this.user.getToken()
+										}))
+									}
+									observer.next(true);
 									observer.complete();
 								});
 							}else{
@@ -73,6 +100,38 @@ export class AuthService {
       });
     }
   }
+
+	public getUser(tokenInfo:TokenInfo, userId, profileId){
+		let body = JSON.stringify({
+			'userId': userId,
+			'profileId': profileId
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(GetUserURL+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						console.log(data);
+						if(data.token != ''){
+							this.user.updateToken(data.token);
+						}
+						if(data.data != false){
+							observer.next(data.data);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
 
 	public saveUser(firstGroup: FormGroup, secondGroup: FormGroup){
 		let body = JSON.stringify({
@@ -161,7 +220,6 @@ export class AuthService {
 	}
 
 	public updateUserInfo(tokenInfo:TokenInfo, userId, profileId, UserFormGroup: FormGroup){
-
 			let body = JSON.stringify({
 				'userId': userId,
 				'profileId': profileId,
@@ -171,12 +229,12 @@ export class AuthService {
 				'country': UserFormGroup.controls['country'].value,
 				'email': UserFormGroup.controls['email'].value,
 				'options':{
-					'rating': UserFormGroup.controls['rating'].value,
-					'visiableRate': UserFormGroup.controls['visiableRate'].value,
-					'hidden': UserFormGroup.controls['hidden'].value
+					'rating': UserFormGroup.controls['rating'].value == true ? 1 : 0,
+					'visiableRate': UserFormGroup.controls['visiableRate'].value == true ? 1 : 0,
+					'hidden': UserFormGroup.controls['hidden'].value == true ? 1 : 0
 				}
-
 			});
+			console.log(body);
       let headers = new Headers({ 'Content-Type': 'application/json' });
       let options = new RequestOptions({ headers: headers });
 			return Observable.create(observer => {
@@ -188,9 +246,11 @@ export class AuthService {
 							console.log(data);
 							if(data != false){
 								console.log("Yes");
-								// this.user.updateToken(data[0].token);
-								this.user.setUser(new UserInfo(data[1].data.userInfo.date_of_birth, data[1].data.userInfo.first_name, data[1].data.userInfo.last_name, data[1].data.userInfo.profile_id, data[1].data.userInfo.user_email, data[1].data.userInfo.user_id));
-								this.user.setProfile(new ProfileInfo(data[1].data.profile.allow_rating, data[1].data.profile.country, data[1].data.profile.gender, data[1].data.profile.hidden, data[1].data.profile.profile_id, data[1].data.profile.visable_rating));
+								if(data.token != ''){
+									this.user.updateToken(data.token);
+								}
+								this.user.setUser(new UserInfo(data.data.userInfo.date_of_birth, data.data.userInfo.first_name, data.data.userInfo.last_name, data.data.userInfo.profile_id, data.data.userInfo.user_email, data.data.userInfo.user_id));
+								this.user.setProfile(new ProfileInfo(data.data.profile.allow_rating, data.data.profile.country, data.data.profile.gender, data.data.profile.hidden, data.data.profile.profile_id, data.data.profile.visable_rating));
 								observer.next(true);
 							}else{
 								console.log("Nope");
@@ -206,6 +266,38 @@ export class AuthService {
 			});
 	}
 
+	public changePassword(passForm: FormGroup, userId, tokenInfo: TokenInfo){
+		let body = JSON.stringify({
+			'userId': userId,
+			'oldPassword': passForm.controls['oldPassword'].value,
+			'newPassword': passForm.controls['newPasswords'].get('firstPass').value
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(UpdatePassURL+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data.token != ''){
+							this.user.updateToken(data.token);
+						}
+						if(data.data != false){
+							observer.next(data.data);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
+
 	public register(credentials) {
     if (credentials.email === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
@@ -217,5 +309,89 @@ export class AuthService {
       });
     }
   }
+
+	public getQuestions(credentals){
+		let body = JSON.stringify({
+			email: credentals.email
+		})
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(GetQuestionsURl ,body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						console.log(data);
+						if(data != false){
+							console.log("Yes");
+							observer.next(data);
+						}else{
+							console.log("Nope");
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
+
+	public answerQuestions(questionsArray){
+		let body = JSON.stringify({
+			questions:questionsArray
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(AnswerQuestionURL, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data != false){
+							observer.next(data);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
+	public forgotChangePassword(password, userId){
+		let body = JSON.stringify({
+			user_id: userId,
+			newPassword: password
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(ChangePassword, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data != false){
+							observer.next(true);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
 
 }

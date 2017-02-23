@@ -1,7 +1,7 @@
 page-profile {
 	.profile-content{
 		color: #FFF;
-    background-color: color($colors, primary, secondary);
+    background-color: #FCFCFC;
 
 		ion-slides {
 			height: auto;
@@ -28,37 +28,6 @@ page-profile {
 		ion-thumbnail img {
 			width: 200px;
 			height: 200px;
-		}
-
-		/* numbered buttons */
-		#status-buttons{}
-
-		#status-buttons a{
-			color:#FFF;
-			display:inline-block;
-			font-size:80%; margin:1%;
-			text-align:center;
-			text-transform:uppercase;
-		}
-		#status-buttons a:hover{
-			text-decoration:none;
-		}
-
-		/* we will style the span as the circled number */
-		#status-buttons span {
-			background:#080808;
-			display:block;
-			height:30px;
-			margin:0 auto 10px;
-			padding-top:7px; width:30px;
-		  border-radius:50%;
-		}
-
-		/* active buttons turn light green-blue*/
-		#status-buttons a.active span {
-			background: color($colors, secondary);
-			color: color($colors, primary);
-			border: 1px solid color($colors, primary);
 		}
 
 		.wrapper{

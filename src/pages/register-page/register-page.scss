@@ -6,8 +6,8 @@ page-register-page {
 	}
 
 	.register-content{
-		color: #FFF;
-    background-color: color($colors, primary, secondary);
+		color: #000000;
+    background-color: #FCFCFC;
 
 		ion-slides {
 			height: auto;
@@ -40,7 +40,7 @@ page-register-page {
 		#status-buttons{}
 
 		#status-buttons a{
-			color:#FFF;
+			color:#000000;
 			display:inline-block;
 			font-size:80%; margin:1%;
 			text-align:center;
@@ -58,6 +58,7 @@ page-register-page {
 			margin:0 auto 10px;
 			padding-top:7px; width:30px;
 		  border-radius:50%;
+			color: #FFF;
 		}
 
 		/* active buttons turn light green-blue*/

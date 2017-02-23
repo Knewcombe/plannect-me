@@ -1,9 +1,14 @@
 import { Component } from '@angular/core';
 import { NavController, AlertController, LoadingController, Loading } from 'ionic-angular';
+
 import { AuthService } from '../../providers/auth-service';
+
 import { RegisterPage } from '../register-page/register-page';
 import { AboutPage } from '../about/about';
 import { DashboardPage } from '../../pages/dashboard/dashboard';
+import { ForgotPassPage } from '../../pages/forgot-pass/forgot-pass';
+
+import { User, UserInfo, ProfileInfo, TokenInfo } from '../../providers/user'
 
 @Component({
   selector: 'page-home',
@@ -13,8 +18,8 @@ import { DashboardPage } from '../../pages/dashboard/dashboard';
 export class HomePage {
 	loading: Loading;
 	loginCredentials = {email: '', password: ''};
-  constructor(private navCtrl: NavController,  private loadingCtrl: LoadingController, private auth: AuthService, private alertCtrl: AlertController) {
-		//constructor
+	keeploggedin = false;
+  constructor(private navCtrl: NavController,  private loadingCtrl: LoadingController, private auth: AuthService, private alertCtrl: AlertController, private user: User) {
   }
 
 	public createAccount() {
@@ -27,7 +32,7 @@ export class HomePage {
 
 	public login() {
     this.showLoading()
-    this.auth.login(this.loginCredentials).subscribe(data => {
+    this.auth.login(this.loginCredentials, this.keeploggedin).subscribe(data => {
       if (data == true) {
         this.loading.dismiss();
         this.navCtrl.setRoot(DashboardPage);
@@ -39,6 +44,13 @@ export class HomePage {
       this.showError(error);
     });
   }
+
+	public forgotPass(){
+		this.loginCredentials.email = '';
+		this.loginCredentials.password = '';
+		this.keeploggedin = false;
+		this.navCtrl.push(ForgotPassPage);
+	}
 
 	showLoading() {
 		this.loading = this.loadingCtrl.create({

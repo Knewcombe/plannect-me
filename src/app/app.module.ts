@@ -10,6 +10,10 @@ import { DashboardPage } from '../pages/dashboard/dashboard';
 import { ProfilePage } from '../pages/profile/profile';
 import { FavouitesPage } from '../pages/favouites/favouites';
 import { StatsPage } from '../pages/stats/stats';
+import { AskQuestionPage } from '../pages/ask-question/ask-question';
+import { ForgotPassPage } from '../pages/forgot-pass/forgot-pass';
+import { ChangePassPage } from '../pages/change-pass/change-pass';
+import { MemberListComponent } from '../components/member-list/member-list'
 
 //Services
 import { CountryService } from '../providers/country-service';
@@ -39,7 +43,11 @@ export const firebaseConfig = {
 		DashboardPage,
 		ProfilePage,
 		FavouitesPage,
-		StatsPage
+		StatsPage,
+		ForgotPassPage,
+		AskQuestionPage,
+		ChangePassPage,
+		MemberListComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp, {
@@ -64,7 +72,10 @@ export const firebaseConfig = {
 		DashboardPage,
 		ProfilePage,
 		FavouitesPage,
-		StatsPage
+		StatsPage,
+		ForgotPassPage,
+		AskQuestionPage,
+		ChangePassPage
   ],
 	providers:[User, Member, CountryService, ImageService]
 })

@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { NavController, AlertController, LoadingController, Loading } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../providers/auth-service';
-import { ImageService } from '../../providers/image-service';
+import { ImageService, Images } from '../../providers/image-service';
 import { CountryService } from '../../providers/country-service';
 import { EmailValidationService } from '../../providers/email-validation-service';
 import { AgeValidator } from '../../providers/age_validation';
@@ -122,7 +122,7 @@ export class RegisterPage {
               password: this.slideOneForm.controls['passwords'].get('firstPass').value
             };
 						console.log(loginCredentials);
-            this.auth.login(loginCredentials).subscribe(data =>{
+            this.auth.login(loginCredentials, false).subscribe(data =>{
               if(data == true){
                 this.auth.setQuestions(this.user.getUserId(), this.slideTwoForm).subscribe(data => {
                   if(data == true){
@@ -134,8 +134,17 @@ export class RegisterPage {
 										}
 										this.image.uploadImages(this.user.getToken(), this.user.getProfileId(), this.imgUpload).subscribe(data => {
 											if(data == true){
-												this.loading.dismiss();
-												this.navCtrl.setRoot(DashboardPage);
+												this.image.downloadImages(this.user.getToken(), this.user.getProfileId()).subscribe(data =>{
+													if(data != false){
+														if(data.length != 0){
+															for (let image of data) {
+																	this.user.setImage(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image, false));
+															}
+														}
+													}
+													this.loading.dismiss();
+													this.navCtrl.setRoot(DashboardPage);
+												})
 											}
 										})
                   }else{

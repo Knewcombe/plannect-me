@@ -5,7 +5,7 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-  <ion-navbar color="secondary">
+  <ion-navbar color="primary">
     <ion-title>dashboard</ion-title>
 		<ion-buttons end>
       <button ion-button menuToggle>
@@ -14,30 +14,33 @@
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-
 <ion-menu [content]="mycontent">
 	<ion-header>
-		<ion-navbar color="secondary">
+		<ion-navbar color="primary">
 	    <ion-title>Menu</ion-title>
 	  </ion-navbar>
 	</ion-header>
   <ion-content class="menu-content">
     <ion-list>
 			<button ion-item color="secondary" (click)="profile()">
-				<ion-icon name="person"></ion-icon>Profile
+				<ion-icon name="person" padding></ion-icon>Profile
 			</button>
 			<button ion-item color="secondary" (click)="favouites()">
-				<ion-icon name="star"></ion-icon>Favouites
+				<ion-icon name="star" padding></ion-icon>Favouites
 			</button>
 			<button ion-item color="secondary" (click)="stats()">
-				<ion-icon name="stats"></ion-icon>Stats
+				<ion-icon name="stats" padding></ion-icon>Stats
 			</button>
     </ion-list>
   </ion-content>
+	<ion-footer>
+			<button ion-item color="primary" (click)="logout()">
+				Logout<ion-icon name="close-circle" padding></ion-icon>
+			</button>
+	</ion-footer>
 </ion-menu>
-
 <ion-content>
-
+	<member-list [member]='members'></member-list>
 </ion-content>
 
 <ion-nav [root]="rootPage" #mycontent swipeBackEnabled="false"></ion-nav>

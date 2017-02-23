@@ -1,0 +1,36 @@
+<!--
+  Generated template for the AskQuestion page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Security Questions</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding class="answer-content">
+	<p *ngIf="submitAttempt && !answerForm.valid" style="color: #ea6153;">Please fill out all details accurately.</p>
+	<ion-list>
+		<form (ngSubmit)="submitAnswer()" [formGroup]="answerForm">
+			<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
+			<ion-card *ngFor="let question of questions; let i=index">
+				<ion-card-header class="wrapper"><strong>Question: </strong>{{question.question}}</ion-card-header>
+				<ion-card-content>
+					<ion-item>
+						{{i}}
+						<ion-label floating>Answer</ion-label>
+						<ion-input *ngIf="i == 0" formControlName="firstAns" type="text" [class.error]="!answerForm.controls.firstAns.valid && (answerForm.controls.firstAns.dirty)"></ion-input>
+						<ion-input *ngIf="i == 1" formControlName="secondAns" type="text" [class.error]="!answerForm.controls.secondAns.valid && (answerForm.controls.secondAns.dirty)"></ion-input>
+						<ion-input *ngIf="i == 2" formControlName="thirdAns" type="text" [class.error]="!answerForm.controls.thirdAns.valid && (answerForm.controls.thirdAns.dirty)"></ion-input>
+					</ion-item>
+				</ion-card-content>
+			</ion-card>
+			<ion-row>
+        <ion-col class="signup-col">
+          <button ion-button class="submit-btn" full type="submit" color="secondary" [disabled]="!answerForm.valid">Submit</button>
+        </ion-col>
+      </ion-row>
+		</form>
+	</ion-list>
+</ion-content>

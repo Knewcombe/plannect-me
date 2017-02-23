@@ -65,10 +65,7 @@ export class User {
 	private tokenInfo: TokenInfo;
   private Images: Array<Images> = [];
 
-  constructor() {
-    console.log('Hello User Provider');
-    console.log(this.Images)
-  }
+  constructor() {}
 
   public setUser(User: UserInfo){
     this.User = User;
@@ -89,6 +86,10 @@ export class User {
   public setImage(Image: Images){
     this.Images.push(Image);
   }
+
+	public resetImages(){
+		this.Images = [];
+	}
 
   public getUserInfo() : UserInfo {
     return this.User;
@@ -135,6 +136,22 @@ export class User {
 
   public updateToken(token:string){
     this.tokenInfo.token = token;
+		if(window.localStorage.getItem('token')){
+			window.localStorage.setItem('token', JSON.stringify({
+					tokenInfo: this.getToken()
+			}))
+		}else if(window.sessionStorage.getItem('token')){
+			window.sessionStorage.setItem('token', JSON.stringify({
+					tokenInfo: this.getToken()
+			}))
+		}
   }
+
+	public removeUser(){
+		this.User = null;
+		this.Profile = null;
+		this.tokenInfo = null;
+	  this.Images = [];
+	}
 
 }

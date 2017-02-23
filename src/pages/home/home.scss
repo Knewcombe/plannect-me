@@ -26,6 +26,10 @@ page-home {
        text-align: center;
      }
 
+		ion-label{
+			color: #FFF;
+		 }
+
     ion-item {
          border-radius: 30px !important;
          padding-left: 30px !important;
@@ -35,6 +39,17 @@ page-home {
          border-bottom: 0px !important;
          box-shadow: none !important;
      }
+
+		 .out{
+			 border-radius: 0px !important;
+			 padding-left: 30px !important;
+			 font-size: 0.9em;
+			 margin-bottom: 10px;
+			 border: none;
+			 border-bottom: 0px !important;
+			 box-shadow: none !important;
+			 background-color: transparent !important;
+		 }
 
      .signup-col {
        margin: 0px 16px 0px 16px;
@@ -49,7 +64,7 @@ page-home {
      .submit-btn {
        background: color($colors, primary);
        border-radius: 30px !important;
-       border: 1px solid color($colors, secondary);
+       border: 1px solid color($colors, primary);
      }
 
      .register-btn {

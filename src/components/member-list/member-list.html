@@ -1,0 +1,49 @@
+<!--
+  Generated template for the MemberList component.
+
+  See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
+  for more info on Angular 2 Components.
+-->
+<ion-content>
+<ion-slides class="member-slider" #memberSlider (ionSlideDidChange)="slideChanged()" direction='horizontal' pager='true'>
+	<ion-slide *ngFor="let member of _member; let i = index">
+		<ion-card>
+			<ion-card-header>
+				<ion-row>
+				  <ion-col width-50>
+						<span class="text-left">{{member.countryEmjo}} {{member.countryName}}</span>
+					</ion-col>
+				  <ion-col width-50>
+						<ion-icon *ngIf="!member.fav" class="text-right" (click)="favourite(member.profile_id)" name="star" color="primary"></ion-icon>
+						<ion-icon *ngIf="member.fav" class="text-right" (click)="notFavourite(member.profile_id)" name="star" color="secondary"></ion-icon>
+					</ion-col>
+				</ion-row>
+			</ion-card-header>
+			<img *ngIf='member.images.length == 0' src="../../assets/img/defaultImage.gif"/>
+			<ion-slides #imageSlider *ngIf='member.images.length != 0' (ionSlideDidChange)="imageChange()" direction='vertical' pager='false'>
+				<ion-slide *ngFor="let image of member.images; let index = index">
+					<img src="{{image.imageBase64}}"/>
+				</ion-slide>
+			</ion-slides>
+		  <ion-card-content>
+				<ion-row>
+					<ion-item>
+					  <ion-range min="60" max="100" step="1" pin="true" snaps="true" debounce='500' (ionChange)="ratingProfile(member.profile_id)" [(ngModel)]="member.rating" color="secondary">
+					    <ion-label range-left small>60</ion-label>
+							<ion-label range-right small>100</ion-label>
+					  </ion-range>
+					</ion-item>
+				</ion-row>
+				<ion-row>
+					<ion-col width-50>
+						<span class="text-left">{{member.profile_id}}</span>
+					</ion-col>
+					<ion-col width-50>
+						<span class="text-right">{{member.averageRating}}%</span>
+					</ion-col>
+				</ion-row>
+		  </ion-card-content>
+		</ion-card>
+	</ion-slide>
+</ion-slides>
+</ion-content>

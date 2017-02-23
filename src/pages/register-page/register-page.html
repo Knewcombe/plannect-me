@@ -5,7 +5,7 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-    <ion-navbar color="secondary">
+    <ion-navbar color="primary">
       <ion-title>
         Sign Up
       </ion-title>
@@ -30,7 +30,7 @@
     		<form #form="ngForm" [formGroup]="slideOneForm">
 					<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
           <ion-card>
-  					<ion-item-divider color="secondary">Name</ion-item-divider>
+  					<ion-item-divider color="primary">Name</ion-item-divider>
           	<ion-item>
               <ion-label floating>First Name</ion-label>
               <ion-input formControlName="firstName" type="text" [class.error]="!slideOneForm.controls.firstName.valid && (slideOneForm.controls.firstName.dirty || submitAttempt)"></ion-input>
@@ -41,7 +41,7 @@
           	</ion-item>
           </ion-card>
           <ion-card [class.error]="!slideOneForm.controls.passwords.valid && (slideOneForm.controls.passwords.dirty || submitAttempt)" [formGroup]="slideOneForm.controls.passwords">
-  					<ion-item-divider color="secondary">Password</ion-item-divider>
+  					<ion-item-divider color="primary">Password</ion-item-divider>
   					<ion-item>
               <ion-label floating>Password</ion-label>
               <ion-input formControlName="firstPass" type="password" [class.error]="!slideOneForm.controls.passwords.controls.firstPass.valid && (slideOneForm.controls.passwords.controls.firstPass.dirty || submitAttempt)"></ion-input>
@@ -55,7 +55,7 @@
             </ion-item>
           </ion-card>
           <ion-card>
-  					<ion-item-divider color="secondary">Additional Information</ion-item-divider>
+  					<ion-item-divider color="primary">Additional Information</ion-item-divider>
   					<ion-item>
               <ion-label floating>Email</ion-label>
               <ion-input formControlName="email" type="email" (blur)="onEmailChange($event.target.value)" [class.error]="!slideOneForm.controls.email.valid && (slideOneForm.controls.email.dirty || submitAttempt)"></ion-input>
@@ -89,7 +89,7 @@
 				<form [formGroup]="slideTwoForm">
 					<p *ngIf="submitAttempt" style="color: #ea6153;">Please fill out all details accurately.</p>
           <ion-card>
-  					<ion-item-divider color="secondary">First Security Question</ion-item-divider>
+  					<ion-item-divider color="primary">First Security Question</ion-item-divider>
   					<ion-item>
   						<ion-label floating>Question</ion-label>
   						<ion-select formControlName="firstSq" tabindex="-9" [class.error]="!slideTwoForm.controls.firstSq.valid && (submitAttempt)">
@@ -105,7 +105,7 @@
           	</ion-item>
           </ion-card>
           <ion-card>
-            <ion-item-divider color="secondary">Second Security Question</ion-item-divider>
+            <ion-item-divider color="primary">Second Security Question</ion-item-divider>
   					<ion-item>
   						<ion-label floating>Question</ion-label>
               <ion-select formControlName="secondSq" tabindex="-11" [class.error]="!slideTwoForm.controls.secondSq.valid && (submitAttempt)">
@@ -121,7 +121,7 @@
           	</ion-item>
           </ion-card>
           <ion-card>
-  					<ion-item-divider color="secondary">Third Security Question</ion-item-divider>
+  					<ion-item-divider color="primary">Third Security Question</ion-item-divider>
   					<ion-item>
   						<ion-label floating>Question</ion-label>
               <ion-select formControlName="thirdSq" tabindex="-13" [class.error]="!slideTwoForm.controls.thirdSq.valid && (submitAttempt)">
@@ -143,12 +143,12 @@
       <ion-grid>
       <ion-row wrap>
         <ion-col width-50 *ngFor="let image of imgSrc; let i=index">
-          <ion-card color="secondary">
+          <ion-card color="primary">
 						<img *ngIf="!image == '' " [src]="image">
 						<img *ngIf="image == '' " src="../../assets/img/defaultImage.gif">
 						<ion-card-content>
-							<button *ngIf="image == '' " ion-button color="primary" (click)="addImage(i)" tabindex="-14"><ion-icon name="camera"></ion-icon>Add</button>
-							<button *ngIf="!image == '' " ion-button color="primary" (click)="removeImage(i)" tabindex="-15"><ion-icon name="close"></ion-icon>Remove</button>
+							<button *ngIf="image == '' " ion-button color="secondary" (click)="addImage(i)" tabindex="-14"><ion-icon name="camera"></ion-icon>Add</button>
+							<button *ngIf="!image == '' " ion-button color="secondary" (click)="removeImage(i)" tabindex="-15"><ion-icon name="close"></ion-icon>Remove</button>
 						</ion-card-content>
           </ion-card>
         </ion-col>
@@ -190,7 +190,7 @@
   </ion-slides>
 </ion-content>
 <ion-footer>
-			<ion-navbar color="secondary">
+			<ion-navbar color="primary">
 	      <ion-buttons>
 	        <button ion-button icon-left (click)="prev()"><ion-icon name="arrow-back"></ion-icon> Prev</button>
 	      </ion-buttons>
