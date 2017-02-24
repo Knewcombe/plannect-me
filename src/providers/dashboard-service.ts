@@ -18,6 +18,9 @@ let GetMembersURL = SERVER_URL + 'api/profiles/getProfiles';
 let GerAverageURL = SERVER_URL + 'api/profiles/profile_average'
 let GetRatingURL = SERVER_URL + 'api/profiles/profile_rating'
 let GetFavouiteURL = SERVER_URL + 'api/profiles/favourite_find'
+let AddFavURL = SERVER_URL + 'api/profiles/favourite_profile'
+let RemoveFavURL = SERVER_URL + 'api/profiles/favourite_remove'
+let RateProfileURL = SERVER_URL + 'api/profiles/rate_profile'
 
 @Injectable()
 export class DashboardService {
@@ -32,6 +35,7 @@ export class DashboardService {
 			requestCountry: country,
 			searchOptions: searchOptions
 		});
+    console.log(searchOptions)
 		let headers = new Headers({ 'Content-Type': 'application/json' });
 		let options = new RequestOptions({ headers: headers });
 		return Observable.create(observer => {
@@ -149,4 +153,99 @@ export class DashboardService {
 				);
 		});
 	}
+
+  public addFav(tokenInfo, profileId, favProfile){
+    let body = JSON.stringify({
+			profileId: profileId,
+			favProfile: favProfile
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(AddFavURL+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data.token != ''){
+							this.user.updateToken(data.token);
+						}
+						if(data.data != false){
+							observer.next(true);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+  }
+
+  public removeFav(tokenInfo, profileId, favProfile){
+    let body = JSON.stringify({
+			profileId: profileId,
+			favProfile: favProfile
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(RemoveFavURL+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data.token != ''){
+							this.user.updateToken(data.token);
+						}
+						if(data.data != false){
+							observer.next(false);
+						}else{
+							observer.next(true);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+  }
+
+  public rateProfile(tokenInfo, value, profileId, rateProfileId){
+    let body = JSON.stringify({
+			profileId: profileId,
+			rateProfileId: rateProfileId,
+      value: value
+		});
+    console.log(body);
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(RateProfileURL+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data.token != ''){
+							this.user.updateToken(data.token);
+						}
+						if(data.data != false){
+							observer.next(true);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+  }
 }

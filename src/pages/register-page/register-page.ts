@@ -132,6 +132,7 @@ export class RegisterPage {
 												this.imgUpload.push(image);
 											}
 										}
+                    if(this.imgUpload.length != 0){
 										this.image.uploadImages(this.user.getToken(), this.user.getProfileId(), this.imgUpload).subscribe(data => {
 											if(data == true){
 												this.image.downloadImages(this.user.getToken(), this.user.getProfileId()).subscribe(data =>{
@@ -147,6 +148,10 @@ export class RegisterPage {
 												})
 											}
 										})
+                  }else{
+                    this.loading.dismiss();
+                    this.navCtrl.setRoot(DashboardPage);
+                  }
                   }else{
                     this.showError("Access Denied");
                   }

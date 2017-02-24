@@ -1,20 +1,7 @@
 member-list {
 
-	ion-slides {
-		width: 100%;
-		height: auto;
-	}
-
 	.card{
 		width: calc(auto - 10px);
-	}
-
-	.swiper-slide img {
-		height: 80%;
-  	width: 80%;
-  	margin: auto;
-  	display: block;
-		border: 1px solid color($colors, secondary);
 	}
 
 	.text-right{

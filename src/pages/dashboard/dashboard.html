@@ -6,15 +6,19 @@
 -->
 <ion-header>
   <ion-navbar color="primary">
-    <ion-title>dashboard</ion-title>
-		<ion-buttons end>
+    <ion-buttons start>
       <button ion-button menuToggle>
         <ion-icon name="more"></ion-icon>
       </button>
     </ion-buttons>
+    <ion-buttons end>
+      <button ion-button (click)="openSearchMenu()">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-menu [content]="mycontent">
+<ion-menu id="menuContent" [content]="mycontent">
 	<ion-header>
 		<ion-navbar color="primary">
 	    <ion-title>Menu</ion-title>
@@ -39,8 +43,49 @@
 			</button>
 	</ion-footer>
 </ion-menu>
+<ion-menu id="searchContent" [content]="searchContent">
+	<ion-header>
+		<ion-navbar color="primary">
+	    <ion-title>Search</ion-title>
+	  </ion-navbar>
+	</ion-header>
+  <ion-content class="menu-content">
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Gender</ion-label>
+          <ion-select [(ngModel)]='searchOptions.gender' tabindex="-7">
+            <ion-option value="M" checked="true">Male</ion-option>
+            <ion-option value="F">Female</ion-option>
+          </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Country</ion-label>
+          <ion-select tabindex="-8" [(ngModel)]='searchOptions.country'>
+            <ion-option *ngFor="let item of countryList" [value]="item.alpha2">{{item.name}}</ion-option>
+          </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-range dualKnobs="true" [(ngModel)]='rangeValue' (ionChange)="changeAge()" min="18" max="100" step="1">
+          <ion-label range-left>{{rangeValue.lower}}</ion-label>
+          <ion-label range-right>{{rangeValue.upper}}</ion-label>
+        </ion-range>
+      </ion-item>
+      <button ion-item color="secondary" (click)="search()">
+				<ion-icon name="search" padding></ion-icon> Search
+			</button>
+      <button ion-item color="secondary" (click)="clearSearch()">
+				<ion-icon name="close-circle" padding></ion-icon> Clear
+			</button>
+    </ion-list>
+  </ion-content>
+</ion-menu>
 <ion-content>
-	<member-list [member]='members'></member-list>
+  <ion-slides #memberSlider (ionSlideDidChange)='slideChanged()' direction='horizontal' pager='false'>
+    <ion-slide *ngFor="let member of members">
+      <member-list [member]='member'></member-list>
+    </ion-slide>
+  </ion-slides>
 </ion-content>
 
 <ion-nav [root]="rootPage" #mycontent swipeBackEnabled="false"></ion-nav>
+<ion-nav [root]="rootPage" #searchContent swipeBackEnabled="false"></ion-nav>

@@ -1,7 +1,9 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { Slides } from 'ionic-angular';
+import { NavController, AlertController, LoadingController, Loading, MenuController, Slides } from 'ionic-angular';
 
 import { Members } from '../../providers/member'
+import { DashboardService } from '../../providers/dashboard-service'
+import { User } from '../../providers/user'
 
 /*
   Generated class for the MemberList component.
@@ -15,50 +17,63 @@ import { Members } from '../../providers/member'
 })
 export class MemberListComponent {
 
-	@ViewChild('memberSlider') memberSlider: Slides;
 	@ViewChild('imageSlider') imageSlider: Slides;
-
-	_member: Array<Members> = [];
+  loading: Loading;
+	_member: Members;
 	rating:number = 0
 
 	@Input()
-  set member(member: Array<Members>) {
+  set member(member: Members) {
     // Here you can do what you want with the variable
     this._member = member;
   }
 
   get member() { return this._member; }
 
-  constructor() {
-    console.log('Hello MemberList Component');
+  constructor(private dash: DashboardService, private user: User, private alertCtrl: AlertController, private loadingCtrl: LoadingController) {
+
   }
 
-	slideChanged(){
-		console.log(this.memberSlider.length());
-		console.log(this.imageSlider.length())
-	}
-
-	imageChange(){
-	}
-
-	nextSlide(){
-
-	}
-
-	prevSlide(){
-
-	}
-
 	favourite(profileId){
-
+    this.dash.addFav(this.user.getToken(), this.user.getProfileId(), profileId).subscribe(data =>{
+      console.log('done');
+      this._member.fav = data;
+    }, error => {
+			this.showError(error);
+		})
 	}
 
 	notFavourite(profileId){
-
+    this.dash.removeFav(this.user.getToken(), this.user.getProfileId(), profileId).subscribe(data =>{
+      console.log('done');
+      this._member.fav = data;
+    })
 	}
 
 	ratingProfile(profileId){
-		console.log(this.rating)
+		this.dash.rateProfile(this.user.getToken(), this._member.rating, this.user.getProfileId(), profileId).subscribe(data =>{
+      console.log('done');
+    },error =>{
+      this.showError(error);
+    })
+	}
+
+  showError(text) {
+
+    let alert = this.alertCtrl.create({
+      title: 'Fail',
+      subTitle: text,
+      buttons: ['OK']
+    });
+
+    alert.present(prompt);
+  }
+
+  showLoading() {
+		this.loading = this.loadingCtrl.create({
+			content: 'Please wait...'
+		});
+		this.loading.present();
 	}
 
 }

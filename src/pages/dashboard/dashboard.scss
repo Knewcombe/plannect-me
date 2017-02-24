@@ -3,4 +3,24 @@ page-dashboard {
 		background: #FCFCFC;
 	}
 
+	ion-slides .vertical{
+		height:60vh;
+		min-height:100%
+	}
+
+	ion-slides {
+		width: 100%;
+	}
+
+	.swiper-slide{
+		height: auto !important;
+	}
+
+	.swiper-slide img {
+		height: 80%;
+  	width: 80%;
+  	margin: auto;
+  	display: block;
+		border: 1px solid color($colors, secondary);
+	}
 }
