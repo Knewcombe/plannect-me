@@ -7,6 +7,7 @@ import { CountryService } from '../../providers/country-service';
 import { EmailValidationService } from '../../providers/email-validation-service';
 import { AgeValidator } from '../../providers/age_validation';
 import { PassValidator } from '../../providers/pass_validation'
+import { CropingImagePage } from '../../pages/croping-image/croping-image';
 
 import { HomePage } from '../../pages/home/home';
 import { DashboardPage } from '../../pages/dashboard/dashboard';
@@ -21,12 +22,12 @@ import { User } from '../../providers/user'
 */
 
 //NOTE: Will need to add https://github.com/chriso/validator.js to salt the string
+
 @Component({
   selector: 'page-register-page',
   templateUrl: 'register-page.html',
 	providers:[AuthService, EmailValidationService, PassValidator, AgeValidator, ImageService]
 })
-
 
 export class RegisterPage {
 	loading: Loading;
@@ -37,10 +38,11 @@ export class RegisterPage {
     slideTwoForm: FormGroup;
 		slideThreeForm: FormGroup;
 		countryList = [];
-    imgSrc = [];
-		imgIndex = 0;
+    public imgSrc = [];
+		public imgIndex = 0;
 		currentIndex = 0;
 		imgUpload = [];
+		_handleReaderLoaded;
 
     submitAttempt: boolean = false;
 
@@ -52,6 +54,16 @@ export class RegisterPage {
 			for(var i = 0; i < 5; ++i){
 				this.imgSrc.push('');
 			}
+
+			var self = this;
+
+			this._handleReaderLoaded = (function(data) { // parenthesis are not necessary
+				return new Promise((resolve, reject) => {
+					self.imgSrc[self.imgIndex] = data;
+	     		resolve();
+				});
+    	}).bind(this);
+
       //Change password pattern to this ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$
 			this.slideOneForm = formBuilder.group({
 				firstName: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
@@ -127,7 +139,6 @@ export class RegisterPage {
                 this.auth.setQuestions(this.user.getUserId(), this.slideTwoForm).subscribe(data => {
                   if(data == true){
 										for(let image of this.imgSrc) {
-											console.log(image)
   										if(image != ''){
 												this.imgUpload.push(image);
 											}
@@ -169,34 +180,20 @@ export class RegisterPage {
     }
 
 		addImage(index){
-			console.log(index)
 			this.imgIndex = index;
 			let clickEvent: MouseEvent = new MouseEvent("click", {bubbles: true});
-			console.log(this.nativeInputBtn)
+			this.showLoading()
 			this.renderer.invokeElementMethod(
         this.nativeInputBtn.nativeElement, "dispatchEvent", [clickEvent]
 			);
 		}
 
-    fileChangeEvent(e){
-			var file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
-
-			var pattern = /image-*/;
-			var reader = new FileReader();
-
-			if (!file.type.match(pattern)) {
-					alert('invalid format');
-					return;
-			}
-
-			reader.onload = this._handleReaderLoaded.bind(this);
-			reader.readAsDataURL(file);
-    }
-
-    _handleReaderLoaded(e) {
-        var reader = e.target;
-        this.imgSrc[this.imgIndex] = reader.result;
-				console.log(this.imgSrc)
+    fileChangeEvent($event){
+			this.loading.dismiss();
+			this.navCtrl.push(CropingImagePage, {
+				event: $event,
+				callback: this._handleReaderLoaded
+			});
     }
 
 		removeImage(index){

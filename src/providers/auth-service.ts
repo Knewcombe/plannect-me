@@ -23,6 +23,7 @@ let GetQuestionsURl = SERVER_URL + 'auth/questions_get'
 let AnswerQuestionURL = SERVER_URL + 'auth/answer_questions'
 let ChangePassword = SERVER_URL + 'auth/forgot_change_password'
 let GetUserURL = SERVER_URL + 'api/profiles/get_users_info'
+let GetAllRatings = SERVER_URL + 'api/profiles/get_all_ratings'
 
 
 @Injectable()
@@ -381,6 +382,36 @@ export class AuthService {
 					data =>  {
 						if(data != false){
 							observer.next(true);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
+
+	public getAllRating(tokenInfo, profileId){
+		let body = JSON.stringify({
+			profileId: profileId
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(GetAllRatings+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data.token != ''){
+							this.user.updateToken(data.token);
+						}
+						if(data.data != false){
+							observer.next(data.data);
 						}else{
 							observer.next(false);
 						}

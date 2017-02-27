@@ -6,7 +6,7 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>Stats</ion-title>
   </ion-navbar>
 
@@ -14,5 +14,26 @@
 
 
 <ion-content padding>
-
+	<ion-row>
+		<ion-col width-50>
+			<ion-card>
+				<ion-card-header>
+					Favourites
+				</ion-card-header>
+				<ion-card-content>
+					{{favAmount}}
+				</ion-card-content>
+			</ion-card>
+		</ion-col>
+		<ion-col width-50>
+			<ion-card>
+				<ion-card-header>
+					Average rating
+				</ion-card-header>
+				<ion-card-content>
+					{{averageRating}}%
+				</ion-card-content>
+			</ion-card>
+		</ion-col>
+	</ion-row>
 </ion-content>

@@ -147,8 +147,8 @@
 						<img *ngIf="!image == '' " [src]="image">
 						<img *ngIf="image == '' " src="../../assets/img/defaultImage.gif">
 						<ion-card-content>
-							<button *ngIf="image == '' " ion-button color="secondary" (click)="addImage(i)" tabindex="-14"><ion-icon name="camera"></ion-icon>Add</button>
-							<button *ngIf="!image == '' " ion-button color="secondary" (click)="removeImage(i)" tabindex="-15"><ion-icon name="close"></ion-icon>Remove</button>
+							<button *ngIf="image == '' " ion-button full color="secondary" (click)="addImage(i)" tabindex="-14"><ion-icon name="camera"></ion-icon>Add</button>
+							<button *ngIf="!image == '' " ion-button full color="secondary" (click)="removeImage(i)" tabindex="-15"><ion-icon name="close"></ion-icon>Remove</button>
 						</ion-card-content>
           </ion-card>
         </ion-col>

@@ -1,15 +1,19 @@
 page-dashboard {
+
 	.menu-content{
 		background: #FCFCFC;
 	}
 
-	ion-slides .vertical{
-		height:60vh;
-		min-height:100%
-	}
-
 	ion-slides {
 		width: 100%;
+	}
+
+	.text-right{
+		float: right;
+	}
+
+	.text-left{
+		float: left;
 	}
 
 	.swiper-slide{
@@ -17,8 +21,6 @@ page-dashboard {
 	}
 
 	.swiper-slide img {
-		height: 80%;
-  	width: 80%;
   	margin: auto;
   	display: block;
 		border: 1px solid color($colors, secondary);

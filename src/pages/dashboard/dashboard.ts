@@ -31,31 +31,29 @@ export class DashboardPage {
 	loading: Loading;
 	members: Array<Members> = []
 	text: string;
+	maxMember = 5;
+	_currentIndex = 0;
 	countryList = [];
-  rangeValue = {lower:0, upper: 0};
+  rangeValue = {lower:18, upper: 25};
 
 	searchOptions = {
 		country: '',
 		gender: '',
 		age:{
 			min: 18,
-			max: 100
+			max: 35
 		}
 	}
 
   constructor(public navCtrl: NavController, public menuCtrl: MenuController, private loadingCtrl: LoadingController,
 		private alertCtrl: AlertController, private user: User, private dash: DashboardService, private image: ImageService, private country: CountryService) {
 
-		this.countryList = country.getCountryList();
+		this.countryList = this.country.getCountryList();
 		this.getMembers();
-		this.text = 'Hello World';
     this.rangeValue = {lower: this.searchOptions.age.min, upper: this.searchOptions.age.min};
 	}
 
 	getMembers(){
-    if(this.members.length > 0){
-      this.members = [];
-    }
 		this.showLoading();
 		console.log('Getting memebers');
 		this.dash.getProfiles(this.user.getToken(), this.searchOptions, this.user.getCountry(), this.user.getProfileId()).subscribe(data => {
@@ -77,7 +75,6 @@ export class DashboardPage {
 					if(member.allow_rating){
 						this.dash.getRating(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
 							if(data != false){
-                console.log(data);
 								member.rating = data[0].rate_amount;
 							}
 						},
@@ -85,22 +82,22 @@ export class DashboardPage {
 							this.showError(error);
 						})
 					}
-
 					this.dash.getFavouite(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
 						member.fav = data;
 					},
 					error => {
 						this.showError(error);
 					})
-
-					this.image.downloadImages(this.user.getToken(), member.profile_id).subscribe(data =>{
-							if(data != false){
-								for(let image of data){
-									member.images.push(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image, false))
+					if(member.images.length <= 0){
+						this.image.downloadImages(this.user.getToken(), member.profile_id).subscribe(data =>{
+								if(data != false){
+									for(let image of data){
+										member.images.push(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image, false))
+									}
 								}
-							}
-					})
-
+						})
+					}
+					console.log(this.countryList.length)
 					for(let countryInfo of this.countryList){
 						if(member.country == countryInfo.alpha2 || member.country == countryInfo.alpha3){
 							member.countryEmjo = countryInfo.emoji;
@@ -109,12 +106,17 @@ export class DashboardPage {
 					}
 				}
 			}
-			console.log(this.members);
 			this.loading.dismiss();
 		},
 		error => {
 			this.showError(error);
 		})
+	}
+
+	openMenu(){
+		console.log('called')
+		this.menuCtrl.enable(true, 'menuContent');
+    this.menuCtrl.open('menuContent');
 	}
 
   changeAge(){
@@ -123,6 +125,11 @@ export class DashboardPage {
   }
 
   search(){
+		if(this.members.length > 0){
+      this.members = [];
+    }
+		this.menuCtrl.close('searchContent');
+    this.menuCtrl.enable(false, 'searchContent');
     this.getMembers();
   }
 
@@ -142,6 +149,7 @@ export class DashboardPage {
   }
 
   openSearchMenu(){
+		console.log('called')
     this.menuCtrl.enable(true, 'searchContent');
     this.menuCtrl.open('searchContent');
   }

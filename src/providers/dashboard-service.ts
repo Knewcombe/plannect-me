@@ -21,6 +21,9 @@ let GetFavouiteURL = SERVER_URL + 'api/profiles/favourite_find'
 let AddFavURL = SERVER_URL + 'api/profiles/favourite_profile'
 let RemoveFavURL = SERVER_URL + 'api/profiles/favourite_remove'
 let RateProfileURL = SERVER_URL + 'api/profiles/rate_profile'
+let FindAllFavURL = SERVER_URL + 'api/profiles/favourite_find_all'
+let GetProfileData = SERVER_URL + 'api/profiles/get_profile_data'
+let GetFavAmountURL = SERVER_URL+ 'api/profiles/get_favouite_amount'
 
 @Injectable()
 export class DashboardService {
@@ -248,4 +251,95 @@ export class DashboardService {
 				);
 		});
   }
+
+	public findAllFav(tokenInfo, profileId){
+    let body = JSON.stringify({
+			profileId: profileId
+		});
+    console.log(body);
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(FindAllFavURL+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data.token != ''){
+							this.user.updateToken(data.token);
+						}
+						if(data.data != false){
+							observer.next(data.data);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+					}
+				);
+		});
+  }
+
+	public getProfileData(tokenInfo, profileId, country){
+    let body = JSON.stringify({
+			profileId: profileId,
+			requestCountry: country
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(GetProfileData+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data.token != ''){
+							this.user.updateToken(data.token);
+						}
+						if(data.data != false){
+							observer.next(data.data);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+  }
+
+	public getFavAmount(tokenInfo, profileId){
+		let body = JSON.stringify({
+			profileId: profileId
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(GetFavAmountURL+'?tokenRefresh='+tokenInfo.tokenRefresh+'&token='+tokenInfo.token, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data.token != ''){
+							this.user.updateToken(data.token);
+						}
+						if(data.data != false){
+							observer.next(data.data);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
 }

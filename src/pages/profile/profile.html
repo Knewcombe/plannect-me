@@ -12,7 +12,7 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content padding class="profile-content">
+<ion-content class="profile-content">
 	<ion-list>
 		<form #form="ngForm" [formGroup]="userForm">
 			<p *ngIf="submitUserAttempt && !userForm.valid" style="color: #ea6153;">Please fill out all details accurately.</p>
@@ -70,7 +70,7 @@
     					</ion-item>
     				</ion-card-content>
         </ion-item>
-        <button ion-button icon-right color="secondary" (click)="saveUser()">Save <ion-icon name="checkmark-circle-outline"></ion-icon></button>
+        <button ion-button full color="secondary" (click)="saveUser()">Save <ion-icon padding name="checkmark-circle-outline"></ion-icon></button>
 			</ion-card>
 		</form>
 	</ion-list>
@@ -96,7 +96,7 @@
 						<p style="color: #ea6153;">Passwords do not match, please try again</p>
 					</ion-item>
 				</div>
-        <button ion-button icon-right color="secondary" (click)="savePassword()">Save <ion-icon name="checkmark-circle-outline"></ion-icon></button>
+        <button ion-button full color="secondary" (click)="savePassword()">Save <ion-icon padding name="checkmark-circle-outline"></ion-icon></button>
 			</ion-card>
 		</form>
 	</ion-list>
@@ -109,15 +109,15 @@
 						<img *ngIf="!image.imageBase64 == '' " [src]="image.imageBase64">
 						<img *ngIf="image.imageBase64 == '' " src="../../assets/img/defaultImage.gif">
 						<ion-card-content>
-							<button *ngIf="image.imageBase64 == '' " ion-button color="secondary" (click)="addImage(i)" tabindex="-14"><ion-icon name="camera"></ion-icon>Add</button>
-							<button *ngIf="!image.imageBase64 == '' " ion-button color="secondary" (click)="removeImage(i)" tabindex="-15"><ion-icon name="close"></ion-icon>Remove</button>
+							<button ion-button full *ngIf="image.imageBase64 == '' " ion-button color="secondary" (click)="addImage(i)" tabindex="-14"><ion-icon name="camera"></ion-icon>Add</button>
+							<button ion-button full *ngIf="!image.imageBase64 == '' " ion-button color="secondary" (click)="removeImage(i)" tabindex="-15"><ion-icon name="close"></ion-icon>Remove</button>
 						</ion-card-content>
           </ion-card>
         </ion-col>
 				    <input type="file" name="file" accept="image/*" style="display: none" (change)="fileChangeEvent($event)" #input>
         </ion-row>
       </ion-grid>
-      <button ion-button icon-right color="secondary" (click)="saveImage()">Save <ion-icon name="checkmark-circle-outline"></ion-icon></button>
+      <button ion-button full color="secondary" (click)="saveImage()">Save <ion-icon padding name="checkmark-circle-outline"></ion-icon></button>
     </ion-card>
   </ion-list>
 </ion-content>

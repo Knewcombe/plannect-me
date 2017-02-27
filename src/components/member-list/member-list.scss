@@ -1,7 +1,9 @@
 member-list {
 
-	.card{
-		width: calc(auto - 10px);
+	.card {
+  	margin: auto;
+  	display: block;
+		border: 1px solid color($colors, secondary);
 	}
 
 	.text-right{

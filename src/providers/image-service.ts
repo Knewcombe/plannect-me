@@ -52,11 +52,8 @@ export class ImageService {
 							this.user.updateToken(data.token);
 						}
 						if(data != false){
-							console.log(data);
-							console.log("Yes");
 							observer.next(true);
 						}else{
-							console.log("Nope");
 							observer.next(false);
 						}
 						observer.complete();
@@ -85,7 +82,6 @@ export class ImageService {
 							this.user.updateToken(data.token);
 						}
 						if(data != null){
-							console.log(data);
 							observer.next(data.data);
 						}else{
 							observer.next(false);
@@ -120,10 +116,8 @@ export class ImageService {
 							if(data.token != ''){
 								this.user.updateToken(data.token);
 							}
-							console.log("Yes");
 							observer.next(true);
 						}else{
-							console.log("Nope");
 							observer.next(false);
 						}
 						observer.complete();
@@ -153,10 +147,8 @@ export class ImageService {
 							if(data.token != ''){
 								this.user.updateToken(data.token);
 							}
-							console.log("Yes");
 							observer.next(true);
 						}else{
-							console.log("Nope");
 							observer.next(false);
 						}
 						observer.complete();

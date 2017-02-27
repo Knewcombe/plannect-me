@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, AlertController, LoadingController, Loading } from 'ionic-angular';
 
 import { AuthService } from '../../providers/auth-service';
+import { CountryService } from '../../providers/country-service';
 
 import { RegisterPage } from '../register-page/register-page';
 import { AboutPage } from '../about/about';
@@ -19,7 +20,7 @@ export class HomePage {
 	loading: Loading;
 	loginCredentials = {email: '', password: ''};
 	keeploggedin = false;
-  constructor(private navCtrl: NavController,  private loadingCtrl: LoadingController, private auth: AuthService, private alertCtrl: AlertController, private user: User) {
+  constructor(private navCtrl: NavController,  private loadingCtrl: LoadingController, private country:CountryService, private auth: AuthService, private alertCtrl: AlertController, private user: User) {
   }
 
 	public createAccount() {

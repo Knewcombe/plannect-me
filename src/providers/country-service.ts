@@ -32,38 +32,43 @@ export class CountryInfo {
 export class CountryService {
 	Country: CountryInfo[] = [];
   constructor(public http: Http) {
-    console.log('Hello CountryService Provider');
-		// let body = JSON.stringify();
-		let headers = new Headers({ 'Content-Type': 'application/json' });
-		let options = new RequestOptions({ headers: headers });
-		this.http.get(countryURL, options)
-			.map(res => res.json())
-			.subscribe(
-				data =>  {
-					data = data.sort((n1,n2) => {
-					    if (n1.name > n2.name) {
-					        return 1;
-					    }
+		console.log('Hello CountryService Provider');
+		if(window.sessionStorage.getItem('countryInfo')){
+			for(let entry of JSON.parse(window.sessionStorage.getItem('countryInfo'))){
+				this.Country.push(new CountryInfo(entry.alpha2, entry.alpha3, entry.emoji, entry.ioc, entry.name));
+			}
+		}else{
+			// let body = JSON.stringify();
+			let headers = new Headers({ 'Content-Type': 'application/json' });
+			let options = new RequestOptions({ headers: headers });
+			this.http.get(countryURL, options)
+				.map(res => res.json())
+				.subscribe( data =>  {
+						console.log('done');
+						data = data.sort((n1,n2) => {
+						    if (n1.name > n2.name) {
+						        return 1;
+						    }
 
-					    if (n1.name < n2.name) {
-					        return -1;
-					    }
-					    return 0;
-					});
-
-					for (let entry of data) {
-						if(entry.alpha2 === 'CA' || entry.alpha2 === 'US'){
-								this.Country.splice(0, 0, new CountryInfo(entry.alpha2, entry.alpha3, entry.emoji, entry.ioc, entry.name));
-						}else{
-							this.Country.push(new CountryInfo(entry.alpha2, entry.alpha3, entry.emoji, entry.ioc, entry.name));
+						    if (n1.name < n2.name) {
+						        return -1;
+						    }
+						    return 0;
+						});
+						for (let entry of data) {
+							if(entry.alpha2 === 'CA' || entry.alpha2 === 'US'){
+									this.Country.splice(0, 0, new CountryInfo(entry.alpha2, entry.alpha3, entry.emoji, entry.ioc, entry.name));
+							}else{
+								this.Country.push(new CountryInfo(entry.alpha2, entry.alpha3, entry.emoji, entry.ioc, entry.name));
+							}
 						}
-						// this.Country.unshift(this.Country.splice(this.Country.findindex(elt => elt.alpha2 === 'Ca'), 1)[0]);
+						window.sessionStorage.setItem('countryInfo', JSON.stringify(this.Country));
+					},
+					err => {
+						console.log("ERROR!: ", err);
 					}
-				},
-				err => {
-					console.log("ERROR!: ", err);
-				}
-			);
+				);
+		}
   }
 
 	public getCountryList(){

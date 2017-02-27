@@ -6,19 +6,19 @@
 -->
 <ion-header>
   <ion-navbar color="primary">
-    <ion-buttons start>
-      <button ion-button menuToggle>
+    <ion-buttons start class="text-left">
+      <button ion-button (click)="openMenu()">
         <ion-icon name="more"></ion-icon>
       </button>
     </ion-buttons>
-    <ion-buttons end>
+    <ion-buttons end class="text-right">
       <button ion-button (click)="openSearchMenu()">
         <ion-icon name="search"></ion-icon>
       </button>
     </ion-buttons>
   </ion-navbar>
 </ion-header>
-<ion-menu id="menuContent" [content]="mycontent">
+<ion-menu swipeEnabled="false" id="menuContent" [content]="mycontent" type="overlay">
 	<ion-header>
 		<ion-navbar color="primary">
 	    <ion-title>Menu</ion-title>
@@ -43,7 +43,7 @@
 			</button>
 	</ion-footer>
 </ion-menu>
-<ion-menu id="searchContent" [content]="searchContent">
+<ion-menu swipeEnabled="menu" id="searchContent" [content]="searchContent" type="overlay">
 	<ion-header>
 		<ion-navbar color="primary">
 	    <ion-title>Search</ion-title>
@@ -87,5 +87,5 @@
   </ion-slides>
 </ion-content>
 
-<ion-nav [root]="rootPage" #mycontent swipeBackEnabled="false"></ion-nav>
-<ion-nav [root]="rootPage" #searchContent swipeBackEnabled="false"></ion-nav>
+<ion-nav [root]="rootPage" #mycontent></ion-nav>
+<ion-nav [root]="rootPage" #searchContent></ion-nav>

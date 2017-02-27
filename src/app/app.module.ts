@@ -1,4 +1,4 @@
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule, ErrorHandler, enableProdMode } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { Http, Headers, RequestOptions } from '@angular/http';
 
@@ -14,6 +14,9 @@ import { AskQuestionPage } from '../pages/ask-question/ask-question';
 import { ForgotPassPage } from '../pages/forgot-pass/forgot-pass';
 import { ChangePassPage } from '../pages/change-pass/change-pass';
 import { MemberListComponent } from '../components/member-list/member-list'
+import { CropingImagePage } from '../pages/croping-image/croping-image';
+
+import { ImageCropperComponent, CropperSettings, Bounds } from 'ng2-img-cropper';
 
 //Services
 import { CountryService } from '../providers/country-service';
@@ -33,6 +36,7 @@ export const firebaseConfig = {
     messagingSenderId: "831532457591"
   };
   // firebase.initializeApp(config);
+enableProdMode();
 
 @NgModule({
   declarations: [
@@ -47,7 +51,9 @@ export const firebaseConfig = {
 		ForgotPassPage,
 		AskQuestionPage,
 		ChangePassPage,
-		MemberListComponent
+		MemberListComponent,
+		CropingImagePage,
+		ImageCropperComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp, {
@@ -75,7 +81,8 @@ export const firebaseConfig = {
 		StatsPage,
 		ForgotPassPage,
 		AskQuestionPage,
-		ChangePassPage
+		ChangePassPage,
+		CropingImagePage
   ],
 	providers:[User, Member, CountryService, ImageService]
 })

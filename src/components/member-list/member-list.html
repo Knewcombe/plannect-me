@@ -17,7 +17,7 @@
 		</ion-row>
 	</ion-card-header>
 	<img *ngIf='_member.images.length == 0' src="../../assets/img/defaultImage.gif">
-	<ion-slides class="vertical" #imageSlider *ngIf='_member.images.length != 0' direction='vertical' pager='true' slidesPerView='1' loop='true'>
+	<ion-slides #imageSlider *ngIf='_member.images.length != 0' direction='horizontal' pager='true' slidesPerView='1' loop='true'>
 		<ion-slide *ngFor="let image of _member.images">
 			<img src="{{image.imageBase64}}">
 		</ion-slide>
@@ -25,7 +25,7 @@
   <ion-card-content>
 		<ion-row>
 			<ion-item>
-			  <ion-range min="60" max="100" step="1" pin="true" snaps="true" debounce='500' (ionChange)="ratingProfile(_member.profile_id)" [(ngModel)]="_member.rating" color="secondary">
+			  <ion-range min="60" max="100" step="1" pin="true" snaps="true" mode='md' debounce='500' (ionChange)="ratingProfile(_member.profile_id)" [(ngModel)]="_member.rating" color="secondary">
 			    <ion-label range-left small>60</ion-label>
 					<ion-label range-right small>100</ion-label>
 			  </ion-range>

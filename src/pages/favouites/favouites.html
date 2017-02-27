@@ -6,7 +6,7 @@
 -->
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>Favouites</ion-title>
   </ion-navbar>
 
@@ -14,5 +14,11 @@
 
 
 <ion-content padding>
-
+	<ion-list>
+		<ion-row *ngFor="let member of members">
+			<ion-col width-100>
+				<member-list [member]='member'></member-list>
+			</ion-col>
+		</ion-row>
+	</ion-list>
 </ion-content>
