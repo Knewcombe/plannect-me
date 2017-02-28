@@ -27,6 +27,9 @@ export class CropingImagePage {
 		this.cropperSettings = new CropperSettings();
 		this.cropperSettings.noFileInput = true;
 
+    this.cropperSettings.width = 200;
+    this.cropperSettings.height = 200;
+
     this.cropperSettings.croppedWidth = 200;
     this.cropperSettings.croppedHeight = 200;
 
@@ -60,10 +63,6 @@ export class CropingImagePage {
     var that = this;
     this.image.onload = function() {
       console.log('loaded')
-      that.cropperSettings.canvasWidth = (this.width/2)
-      that.cropperSettings.canvasHeight = (this.height/2)
-      that.cropperSettings.width = this.width;
-      that.cropperSettings.height = this.height;
       console.log(that.cropper);
       that.cropper.setImage(that.image);
       that.loading.dismiss();
