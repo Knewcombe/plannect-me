@@ -7,6 +7,7 @@ import { CountryService } from '../../providers/country-service';
 import { EmailValidationService } from '../../providers/email-validation-service';
 import { AgeValidator } from '../../providers/age_validation';
 import { PassValidator } from '../../providers/pass_validation'
+import { CropingImagePage } from '../../pages/croping-image/croping-image';
 
 import { User, UserInfo, ProfileInfo, TokenInfo } from '../../providers/user'
 
@@ -37,6 +38,7 @@ export class ProfilePage {
 	currentIndex = 0;
 	imgUpload = [];
 	imgRemove = [];
+  _handleReaderLoaded;
 
   userChanged: boolean = false;
   passwordChanged: boolean = false;
@@ -58,6 +60,18 @@ export class ProfilePage {
         this.imgSrc.push(new Images(null, '', false));
       }
 		}
+
+    var self = this;
+
+    this._handleReaderLoaded = (function(data) { // parenthesis are not necessary
+      return new Promise((resolve, reject) => {
+        console.log(self.nativeInputBtn.nativeElement.files)
+        self.imgSrc[self.imgIndex].imageBase64 = data;
+  			self.imgSrc[self.imgIndex].changed = true;
+        self.nativeInputBtn.nativeElement.value = '';
+        resolve();
+      });
+    })
 
 		this.userForm = formBuilder.group({
 			firstName: [this.userInfo.first_name, Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
@@ -199,25 +213,20 @@ export class ProfilePage {
     );
   }
 
-  fileChangeEvent(e){
-    var file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0];
-
-    var pattern = /image-*/;
-    var reader = new FileReader();
-
-    if (!file.type.match(pattern)) {
-        alert('invalid format');
-        return;
-    }
-
-    reader.onload = this._handleReaderLoaded.bind(this);
-    reader.readAsDataURL(file);
-  }
-
-  _handleReaderLoaded(e) {
-      var reader = e.target;
-      this.imgSrc[this.imgIndex].imageBase64 = reader.result;
-			this.imgSrc[this.imgIndex].changed = true;
+  fileChangeEvent($event){
+    this.showLoading();
+    var file:File = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
+    var myReader:FileReader = new FileReader();
+    var that = this;
+    console.log(file);
+    myReader.onloadend = function (loadEvent:any) {
+        that.loading.dismiss();
+        that.navCtrl.push(CropingImagePage, {
+          src: loadEvent.target.result,
+          callback: that._handleReaderLoaded
+        });
+    };
+    myReader.readAsDataURL(file);
   }
 
   removeImage(index){

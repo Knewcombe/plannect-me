@@ -59,10 +59,12 @@ export class RegisterPage {
 
 			this._handleReaderLoaded = (function(data) { // parenthesis are not necessary
 				return new Promise((resolve, reject) => {
+          console.log(self.nativeInputBtn.nativeElement.files)
 					self.imgSrc[self.imgIndex] = data;
+          self.nativeInputBtn.nativeElement.value = '';
 	     		resolve();
 				});
-    	}).bind(this);
+    	})
 
       //Change password pattern to this ^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).*$
 			this.slideOneForm = formBuilder.group({
@@ -182,18 +184,28 @@ export class RegisterPage {
 		addImage(index){
 			this.imgIndex = index;
 			let clickEvent: MouseEvent = new MouseEvent("click", {bubbles: true});
-			this.showLoading()
+      console.log(this.nativeInputBtn.nativeElement.files);
+			// this.showLoading();
 			this.renderer.invokeElementMethod(
         this.nativeInputBtn.nativeElement, "dispatchEvent", [clickEvent]
 			);
 		}
 
     fileChangeEvent($event){
-			this.loading.dismiss();
-			this.navCtrl.push(CropingImagePage, {
-				event: $event,
-				callback: this._handleReaderLoaded
-			});
+      this.showLoading();
+      var file:File = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
+      var myReader:FileReader = new FileReader();
+      var that = this;
+      console.log(file);
+      myReader.onloadend = function (loadEvent:any) {
+          that.loading.dismiss();
+          that.navCtrl.push(CropingImagePage, {
+    				src: loadEvent.target.result,
+    				callback: that._handleReaderLoaded
+    			});
+      };
+      myReader.readAsDataURL(file);
+
     }
 
 		removeImage(index){

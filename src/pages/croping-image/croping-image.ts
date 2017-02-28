@@ -19,15 +19,13 @@ export class CropingImagePage {
 	data:any;
 	croppedWidth:number;
   croppedHeight:number;
-	$event:any;
+  image:any = new Image();
 	callback;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private loadingCtrl: LoadingController) {
-
+    this.showLoading();
 		this.cropperSettings = new CropperSettings();
 		this.cropperSettings.noFileInput = true;
-    this.cropperSettings.width = 200;
-    this.cropperSettings.height = 200;
 
     this.cropperSettings.croppedWidth = 200;
     this.cropperSettings.croppedHeight = 200;
@@ -36,9 +34,9 @@ export class CropingImagePage {
     this.cropperSettings.minHeight = 10;
 
     this.cropperSettings.rounded = false;
-    this.cropperSettings.keepAspect = false;
+    this.cropperSettings.keepAspect = true;
 
-		this.cropperSettings.touchRadius = 30;
+		this.cropperSettings.touchRadius = 25;
 
     this.cropperSettings.cropperDrawSettings.strokeColor = 'rgba(255,255,255,1)';
     this.cropperSettings.cropperDrawSettings.strokeWidth = 2;
@@ -47,24 +45,30 @@ export class CropingImagePage {
 
 		this.cropperSettings.fileType = "jpeg";
 
+    this.callback = navParams.get('callback');
+
 		this.data = {}
 
-		this.$event = navParams.get('event');
-		this.callback = navParams.get('callback');
-		var image:any = new Image();
-    var file:File = this.$event.dataTransfer ? this.$event.dataTransfer.files[0] : this.$event.target.files[0];
-		var myReader:FileReader = new FileReader();
-    var that = this;
-    myReader.onloadend = function (loadEvent:any) {
-        image.src = loadEvent.target.result;
-        that.cropper.setImage(image);
-    };
-		myReader.readAsDataURL(file);
+    this.image.src = navParams.get('src');
+
+    console.log(this.image);
+    // this.cropper.setImage()
+
 	}
 
-	// ionViewDidLoad() {
-	//
-  // }
+	ionViewDidLoad() {
+    var that = this;
+    this.image.onload = function() {
+      console.log('loaded')
+      that.cropperSettings.canvasWidth = (this.width/2)
+      that.cropperSettings.canvasHeight = (this.height/2)
+      that.cropperSettings.width = this.width;
+      that.cropperSettings.height = this.height;
+      console.log(that.cropper);
+      that.cropper.setImage(that.image);
+      that.loading.dismiss();
+    }
+  }
 
 	cropped(bounds:Bounds) {
     this.croppedHeight = bounds.bottom-bounds.top;

@@ -4,6 +4,6 @@ function isServer()
     return window.location.hostname.indexOf('test') > 0;
 }
 
-export let SERVER_URL = isServer() ? "/" : "http://192.168.0.207:8080/";
+export let SERVER_URL = isServer() ? "/" : "http://192.168.0.5:8080/";
 
 //"http://192.168.0.207:8080/"

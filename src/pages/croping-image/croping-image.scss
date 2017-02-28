@@ -1,3 +1,8 @@
 page-croping-image {
-
+  canvas{
+    width:100%;
+    margin: auto;
+  	display: block;
+		border: 1px solid color($colors, secondary);
+  }
 }
