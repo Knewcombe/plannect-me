@@ -4,9 +4,9 @@ page-dashboard {
 		background: #FCFCFC;
 	}
 
-	ion-slides {
-		width: 100%;
-	}
+	// ion-slides {
+	// 	width: 100%;
+	// }
 
 	.text-right{
 		float: right;
@@ -23,6 +23,5 @@ page-dashboard {
 	.swiper-slide img {
   	margin: auto;
   	display: block;
-		border: 1px solid color($colors, secondary);
 	}
 }

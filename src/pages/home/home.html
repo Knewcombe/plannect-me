@@ -1,18 +1,7 @@
 <ion-content class="login-content" padding>
-	<ion-row class="logo-row">
+	<ion-row>
 		<ion-col width-100 text-center>
 			<h1 class="largtext">Plannectme</h1>
-		</ion-col>
-	</ion-row>
-	<ion-row>
-		<ion-col width-35>
-			<img src="http://placehold.it/300x200"/>
-		</ion-col>
-		<ion-col width-35>
-			<img src="http://placehold.it/300x200"/>
-		</ion-col>
-		<ion-col width-35>
-			<img src="http://placehold.it/300x200"/>
 		</ion-col>
 	</ion-row>
 	<ion-row>
@@ -20,7 +9,31 @@
 			<p>Connecting the planet one face at a time!</p>
 		</ion-col>
 	</ion-row>
+	<ion-row>
+		<ion-col width-35>
+			<img src="../../assets/img/guyFrontFace.jpg"/>
+		</ion-col>
+		<ion-col width-35>
+				<img src="../../assets/img/couple.jpg"/>
+		</ion-col>
+		<ion-col width-35>
+			<img src="../../assets/img/girlFrontFace.jpg"/>
+		</ion-col>
+	</ion-row>
+	<ion-row (click)="about()">
+		<ion-col width-100 text-center>
+			<p>
+				Plannectme.com is a social media club whose goal is to visually connect the planet via pictures of individuals located throughout the different countries of the world. Plannectme.com
+				<strong>is not a dating web site</strong>, the only way to identify the individuals is by their unique 12 digit number as well as what country they live in.... <strong>more</strong>
+			</p>
+		</ion-col>
+	</ion-row>
 	<div class="login-box">
+		<ion-row>
+			<ion-col width-100 text-center>
+				<strong>Login</strong>
+			</ion-col>
+		</ion-row>
     <form (ngSubmit)="login()" #registerForm="ngForm">
       <ion-row>
         <ion-col>

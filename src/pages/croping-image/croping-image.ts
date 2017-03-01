@@ -46,20 +46,20 @@ export class CropingImagePage {
     this.cropperSettings.preserveSize = false
     this.cropperSettings.minWithRelativeToResolution = true
 
-		this.cropperSettings.fileType = "jpeg";
+		this.cropperSettings.fileType = "image/jpg";
 
     this.callback = navParams.get('callback');
 
 		this.data = {}
 
-    this.image.src = navParams.get('src');
-
     console.log(this.image);
+		console.log(this.cropperSettings);
     // this.cropper.setImage()
 
 	}
 
 	ionViewDidLoad() {
+		this.image.src = this.navParams.get('src');
     var that = this;
     this.image.onload = function() {
       console.log('loaded')

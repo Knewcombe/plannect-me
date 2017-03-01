@@ -59,8 +59,8 @@ export class RegisterPage {
 
 			this._handleReaderLoaded = (function(data) { // parenthesis are not necessary
 				return new Promise((resolve, reject) => {
-          console.log(self.nativeInputBtn.nativeElement.files)
 					self.imgSrc[self.imgIndex] = data;
+					console.log(self.imgSrc[self.imgIndex]);
           self.nativeInputBtn.nativeElement.value = '';
 	     		resolve();
 				});
@@ -107,12 +107,12 @@ export class RegisterPage {
       if(this.slideOneForm.get("dob").valid){
         this.slideOneForm.controls['dob'].disable();
         let ageVal = this.slideOneForm.get('dob');
-        if(ageVal['warnings'].toYoung){
-          this.slideThreeForm.controls['visiableRate'].disable();
-          this.slideThreeForm.controls['hidden'].disable();
-          this.slideThreeForm.controls['visiableRate'].setValue(0);
-          this.slideThreeForm.controls['hidden'].setValue(0);
-        }
+        // if(ageVal['warnings'].toYoung){
+        //   this.slideThreeForm.controls['visiableRate'].disable();
+        //   this.slideThreeForm.controls['hidden'].disable();
+        //   this.slideThreeForm.controls['visiableRate'].setValue(0);
+        //   this.slideThreeForm.controls['hidden'].setValue(0);
+        // }
       }
   	}
 
@@ -183,6 +183,7 @@ export class RegisterPage {
 
 		addImage(index){
 			this.imgIndex = index;
+			this.showLoading();
 			let clickEvent: MouseEvent = new MouseEvent("click", {bubbles: true});
       console.log(this.nativeInputBtn.nativeElement.files);
 			// this.showLoading();
@@ -192,7 +193,6 @@ export class RegisterPage {
 		}
 
     fileChangeEvent($event){
-      this.showLoading();
       var file:File = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
       var myReader:FileReader = new FileReader();
       var that = this;

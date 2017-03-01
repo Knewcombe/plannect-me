@@ -145,9 +145,9 @@ export class AuthService {
 			'dob': firstGroup.controls['dob'].value,
 			'email':firstGroup.controls['email'].value,
 			'options':{
-				'rating': secondGroup.controls['rating'].value,
-				'visiableRate': secondGroup.controls['visiableRate'].value,
-				'hidden': secondGroup.controls['hidden'].value
+				'rating': secondGroup.controls['rating'].value == true ? 1 : 0,
+				'visiableRate': secondGroup.controls['visiableRate'].value == true ? 1 : 0,
+				'hidden': secondGroup.controls['hidden'].value == true ? 1 : 0
 			}
 		});
 		let headers = new Headers({ 'Content-Type': 'application/json' });

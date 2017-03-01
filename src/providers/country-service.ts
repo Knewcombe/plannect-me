@@ -44,7 +44,6 @@ export class CountryService {
 			this.http.get(countryURL, options)
 				.map(res => res.json())
 				.subscribe( data =>  {
-						console.log('done');
 						data = data.sort((n1,n2) => {
 						    if (n1.name > n2.name) {
 						        return 1;
@@ -56,13 +55,16 @@ export class CountryService {
 						    return 0;
 						});
 						for (let entry of data) {
-							if(entry.alpha2 === 'CA' || entry.alpha2 === 'US'){
+							if(entry.alpha2 === 'CA'){
 									this.Country.splice(0, 0, new CountryInfo(entry.alpha2, entry.alpha3, entry.emoji, entry.ioc, entry.name));
+							}else if(entry.alpha2 === 'US'){
+									this.Country.splice(1, 0, new CountryInfo(entry.alpha2, entry.alpha3, entry.emoji, entry.ioc, entry.name));
 							}else{
 								this.Country.push(new CountryInfo(entry.alpha2, entry.alpha3, entry.emoji, entry.ioc, entry.name));
 							}
 						}
 						window.sessionStorage.setItem('countryInfo', JSON.stringify(this.Country));
+						console.log(this.Country);
 					},
 					err => {
 						console.log("ERROR!: ", err);

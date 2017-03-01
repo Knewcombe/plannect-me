@@ -1,7 +1,9 @@
 member-list {
 
 	.card {
-  	margin: auto;
+		// padding: 10px;
+  	// margin: auto;
+		bottom: 10px;
   	display: block;
 		border: 1px solid color($colors, secondary);
 	}
@@ -18,4 +20,18 @@ member-list {
 		font-size: 1.5em
 	}
 
+	.swiper-slide img {
+		width: 90%;
+	}
+
+	.range-md.range-has-pin {
+    padding-top: 20px;
+	}
+
+	.card-header{
+		padding: 5px;
+	}
+	.card-content{
+		padding: 5px 6px 5px 6px;
+	}
 }

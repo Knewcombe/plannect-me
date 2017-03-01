@@ -155,7 +155,7 @@ export class DashboardPage {
   }
 
   slideChanged(){
-    if((this.memberSlider.getActiveIndex()+1) > (this.members.length - 1)){
+    if((this.memberSlider.getActiveIndex()) >= (this.members.length - 1)){
       this.memberSlider.lockSwipeToNext(true);
     }else{
       this.memberSlider.lockSwipeToNext(false);
