@@ -1,4 +1,5 @@
 import { Injectable, Component } from '@angular/core';
+import { NavController } from 'ionic-angular';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { FormGroup } from '@angular/forms';
 import { SERVER_URL } from './config';
@@ -7,6 +8,7 @@ import { User, UserInfo, ProfileInfo, TokenInfo } from '../providers/user'
 import { ImageService, Images } from '../providers/image-service'
 import 'rxjs/add/operator/map';
 
+import { HomePage } from '../pages/home/home'
 /*
   Generated class for the AuthService provider.
 
@@ -28,13 +30,12 @@ let GetAllRatings = SERVER_URL + 'api/profiles/get_all_ratings'
 
 @Injectable()
 export class AuthService {
-
+	private navCtrl: NavController;
   constructor(public http: Http, private user: User, private image: ImageService) {
     // console.log(loginURL);
   }
 
 	public login(credentials, keeploggedin) {
-		console.log(credentials);
     if (credentials.email === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
@@ -48,7 +49,6 @@ export class AuthService {
 					.subscribe(
 						data =>  {
 							if(data != false){
-								console.log("Yes");
 								this.user.setUser(new UserInfo(data.userInfo.date_of_birth, data.userInfo.first_name, data.userInfo.last_name, data.userInfo.profile_id, data.userInfo.user_email, data.userInfo.user_id));
 								this.user.setProfile(new ProfileInfo(data.profile.allow_rating, data.profile.country, data.profile.gender, data.profile.hidden, data.profile.profile_id, data.profile.visable_rating));
 								this.user.setTokenInfo(new TokenInfo(data.tokenInfo.token, keeploggedin));
@@ -89,7 +89,6 @@ export class AuthService {
 									observer.complete();
 								});
 							}else{
-								console.log("Nope");
 								observer.next(false);
 							}
 						},
@@ -115,16 +114,27 @@ export class AuthService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						console.log(data);
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(data.data);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(data.data);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -158,12 +168,9 @@ export class AuthService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						console.log(data);
 						if(data != false){
-							console.log("Yes");
 							observer.next(true);
 						}else{
-							console.log("Nope");
 							observer.next(false);
 						}
 						observer.complete();
@@ -202,12 +209,9 @@ export class AuthService {
 				.map(res => res.json())
 				.subscribe(
 					data =>  {
-						console.log(data);
 						if(data != false){
-							console.log("Yes");
 							observer.next(true);
 						}else{
-							console.log("Nope");
 							observer.next(false);
 						}
 						observer.complete();
@@ -235,7 +239,6 @@ export class AuthService {
 					'hidden': UserFormGroup.controls['hidden'].value == true ? 1 : 0
 				}
 			});
-			console.log(body);
       let headers = new Headers({ 'Content-Type': 'application/json' });
       let options = new RequestOptions({ headers: headers });
 			return Observable.create(observer => {
@@ -244,20 +247,29 @@ export class AuthService {
 					.map((res:Response) => res.json())
 					.subscribe(
 						data =>  {
-							console.log(data);
-							if(data != false){
-								console.log("Yes");
-								if(data.token != ''){
-									this.user.updateToken(data.token);
+							if(data.success == false){
+								if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+									window.localStorage.removeItem('user');
+									window.localStorage.removeItem('token');
+								}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+									window.sessionStorage.removeItem('user');
+									window.sessionStorage.removeItem('token');
 								}
-								this.user.setUser(new UserInfo(data.data.userInfo.date_of_birth, data.data.userInfo.first_name, data.data.userInfo.last_name, data.data.userInfo.profile_id, data.data.userInfo.user_email, data.data.userInfo.user_id));
-								this.user.setProfile(new ProfileInfo(data.data.profile.allow_rating, data.data.profile.country, data.data.profile.gender, data.data.profile.hidden, data.data.profile.profile_id, data.data.profile.visable_rating));
-								observer.next(true);
+								this.user.removeUser();
+								this.navCtrl.setRoot(HomePage);
 							}else{
-								console.log("Nope");
-								observer.next(false);
+								if(data != false){
+									if(data.token != ''){
+										this.user.updateToken(data.token);
+									}
+									this.user.setUser(new UserInfo(data.data.userInfo.date_of_birth, data.data.userInfo.first_name, data.data.userInfo.last_name, data.data.userInfo.profile_id, data.data.userInfo.user_email, data.data.userInfo.user_id));
+									this.user.setProfile(new ProfileInfo(data.data.profile.allow_rating, data.data.profile.country, data.data.profile.gender, data.data.profile.hidden, data.data.profile.profile_id, data.data.profile.visable_rating));
+									observer.next(true);
+								}else{
+									observer.next(false);
+								}
+								observer.complete();
 							}
-							observer.complete();
 						},
 						err => {
 							observer.error('Unable to connect, please check connection');
@@ -281,15 +293,27 @@ export class AuthService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(data.data);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(data.data);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -323,12 +347,9 @@ export class AuthService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						console.log(data);
 						if(data != false){
-							console.log("Yes");
 							observer.next(data);
 						}else{
-							console.log("Nope");
 							observer.next(false);
 						}
 						observer.complete();
@@ -407,15 +428,27 @@ export class AuthService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(data.data);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(data.data);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');

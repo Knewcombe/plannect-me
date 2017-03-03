@@ -9,7 +9,7 @@
     <ion-title>Security Questions</ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content padding class="answer-content">
+<ion-content padding>
 	<p *ngIf="submitAttempt && !answerForm.valid" style="color: #ea6153;">Please fill out all details accurately.</p>
 	<ion-list>
 		<form (ngSubmit)="submitAnswer()" [formGroup]="answerForm">

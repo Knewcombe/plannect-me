@@ -24,9 +24,9 @@ export class ForgotPassPage {
 
   constructor(private navCtrl: NavController, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private auth: AuthService) {}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ForgotPassPage');
-  }
+  // ionViewDidLoad() {
+  //   console.log('ionViewDidLoad ForgotPassPage');
+  // }
 
 	submit(){
 		this.submitAttempt = true;

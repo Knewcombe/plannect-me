@@ -26,7 +26,6 @@ export class ChangePassPage {
 
   constructor(private navCtrl: NavController, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private auth: AuthService, private navParams: NavParams, public formBuilder: FormBuilder) {
 		this.userId = navParams.get('userId');
-		console.log(this.userId);
 		this.passwordForm = formBuilder.group({
 			firstPass: ['', Validators.compose([Validators.maxLength(30), Validators.required])],
 			secondPass: ['', Validators.compose([Validators.maxLength(30), Validators.required])]
@@ -43,9 +42,9 @@ export class ChangePassPage {
 		})
 	}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ChangePassPage');
-  }
+  // ionViewDidLoad() {
+  //   console.log('ionViewDidLoad ChangePassPage');
+  // }
 
 	showLoading() {
 		this.loading = this.loadingCtrl.create({

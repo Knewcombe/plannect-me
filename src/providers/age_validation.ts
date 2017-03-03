@@ -14,18 +14,12 @@ export class AgeValidator {
       }
       if(age){
         if(age > 18){
-          console.log("Older then 18");
           control.warnings = {toYoung: false};
           return null;
         }else{
-          console.log("Younger then 18");
           control.warnings = {toYoung: true};
           return null;
         }
-      }else{
-        return {
-          "not realistic": true
-        };
       }
     }
 }

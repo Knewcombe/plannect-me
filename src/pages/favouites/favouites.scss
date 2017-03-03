@@ -1,5 +1,10 @@
 page-favouites {
 
+	.content{
+    color: #000000;
+    background-color: #F1F1F1;
+	}
+
 	member-list .card {
 		max-height: 100% !important;
 	}
@@ -11,7 +16,7 @@ page-favouites {
 	.swiper-slide img {
   	margin: auto;
   	display: block;
-		border: 1px solid color($colors, secondary);
+		// border: 1px solid color($colors, secondary);
 	}
 
 	.card {
@@ -24,7 +29,7 @@ page-favouites {
 	ion-card img {
 		margin: auto;
   	display: block;
-		border: 1px solid color($colors, secondary);
+		// border: 1px solid color($colors, secondary);
 	}
 
 }

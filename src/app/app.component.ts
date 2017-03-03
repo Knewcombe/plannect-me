@@ -18,7 +18,7 @@ import { User, UserInfo, ProfileInfo, TokenInfo } from '../providers/user'
 
 export class MyApp {
   rootPage;
-  constructor(platform: Platform, private user: User, private auth: AuthService, private image: ImageService) {
+  constructor(platform: Platform, private user: User, private auth: AuthService, private image: ImageService, private alertCtrl: AlertController) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.

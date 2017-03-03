@@ -80,7 +80,15 @@
   </ion-content>
 </ion-menu>
 <ion-content>
-  <ion-slides #memberSlider (ionSlideDidChange)='slideChanged()' direction='horizontal' pager='false'>
+	<ion-refresher (ionRefresh)="doRefresh($event)">
+		<ion-refresher-content
+			pullingIcon="arrow-dropdown"
+			pullingText="Pull to refresh"
+			refreshingSpinner="circles"
+			refreshingText="Refreshing...">
+		</ion-refresher-content>
+	</ion-refresher>
+  <ion-slides *ngIf="members.length > 0" #memberSlider (ionSlideDidChange)='slideChanged()' direction='horizontal' pager='false'>
     <ion-slide *ngFor="let member of members">
       <member-list [member]='member'></member-list>
     </ion-slide>

@@ -61,8 +61,8 @@ export class StatsPage {
 		})
 	}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad StatsPage');
-  }
+  // ionViewDidLoad() {
+  //   console.log('ionViewDidLoad StatsPage');
+  // }
 
 }

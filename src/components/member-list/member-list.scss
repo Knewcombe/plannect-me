@@ -34,4 +34,10 @@ member-list {
 	.card-content{
 		padding: 5px 6px 5px 6px;
 	}
+
+	@media (min-width: 850px) {
+		.swiper-slide img {
+			max-width: 45%;
+		}
+	}
 }

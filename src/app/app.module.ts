@@ -65,7 +65,8 @@ enableProdMode();
           }
           // http://ionicframework.com/docs/v2/api/config/Config/)
 				}
-			}
+			},
+			{swipeBackEnabled:false}
 		),
 		AngularFireModule.initializeApp(firebaseConfig)
   ],

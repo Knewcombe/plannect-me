@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, Renderer } from '@angular/core';
-import { NavController, AlertController, LoadingController, Loading } from 'ionic-angular';
+import { NavController, AlertController, LoadingController, Loading, ViewController, Content } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../providers/auth-service';
 import { ImageService, Images } from '../../providers/image-service';
@@ -33,7 +33,7 @@ export class RegisterPage {
 	loading: Loading;
 	@ViewChild('signupSlider') signupSlider: any;
 	@ViewChild("input") nativeInputBtn: any;
-
+	@ViewChild(Content) content: Content;
     slideOneForm: FormGroup;
     slideTwoForm: FormGroup;
 		slideThreeForm: FormGroup;
@@ -46,9 +46,9 @@ export class RegisterPage {
 
     submitAttempt: boolean = false;
 
-    constructor(private renderer: Renderer, public formBuilder: FormBuilder, private navCtrl: NavController,  private loadingCtrl: LoadingController,
+    constructor(private renderer: Renderer, public formBuilder: FormBuilder, private navCtrl: NavController,  private loadingCtrl: LoadingController, private viewCtrl: ViewController,
 		private auth: AuthService, private image: ImageService, private country: CountryService, private emailVal: EmailValidationService, private alertCtrl: AlertController, private user: User) {
-
+			this.viewCtrl.setBackButtonText('Cancel');
 			this.countryList = country.getCountryList();
 
 			for(var i = 0; i < 5; ++i){
@@ -60,7 +60,6 @@ export class RegisterPage {
 			this._handleReaderLoaded = (function(data) { // parenthesis are not necessary
 				return new Promise((resolve, reject) => {
 					self.imgSrc[self.imgIndex] = data;
-					console.log(self.imgSrc[self.imgIndex]);
           self.nativeInputBtn.nativeElement.value = '';
 	     		resolve();
 				});
@@ -93,6 +92,10 @@ export class RegisterPage {
 				hidden: [1],
 			});
 		}
+		ionViewDidLoad() {
+			this.signupSlider.lockSwipes();
+		}
+		
     next(){
 			this.signupSlider.slideNext();
     }
@@ -100,24 +103,35 @@ export class RegisterPage {
     prev(){
 			this.signupSlider.slidePrev();
 		}
-
+		test(){
+			console.log(this.slideOneForm.controls['dob'].value);
+			if(this.slideOneForm.controls['dob'].value){
+				// this.slideOneForm.controls['dob'].valid = false;
+				// this.slideOneForm.valid = true;
+				console.log(this.slideOneForm.controls['dob'].invalid);
+				console.log(this.slideOneForm.controls['dob'].valid);
+			}
+		}
 		slideChanged() {
-      console.log(this.slideThreeForm);
+			this.content.scrollToTop();
 			this.currentIndex = this.signupSlider.getActiveIndex();
-      if(this.slideOneForm.get("dob").valid){
-        this.slideOneForm.controls['dob'].disable();
-        let ageVal = this.slideOneForm.get('dob');
-        // if(ageVal['warnings'].toYoung){
-        //   this.slideThreeForm.controls['visiableRate'].disable();
-        //   this.slideThreeForm.controls['hidden'].disable();
-        //   this.slideThreeForm.controls['visiableRate'].setValue(0);
-        //   this.slideThreeForm.controls['hidden'].setValue(0);
-        // }
-      }
+
+      // if(this.slideOneForm.get("dob").valid){
+      //   this.slideOneForm.controls['dob'].disable();
+      //   // let ageVal = this.slideOneForm.get('dob');
+      //   // if(ageVal['warnings'].toYoung){
+      //   //   this.slideThreeForm.controls['visiableRate'].disable();
+      //   //   this.slideThreeForm.controls['hidden'].disable();
+      //   //   this.slideThreeForm.controls['visiableRate'].setValue(0);
+      //   //   this.slideThreeForm.controls['hidden'].setValue(0);
+      //   // }
+      // }
   	}
 
     save(){
       this.submitAttempt = true;
+			console.log(this.slideOneForm.controls['dob'].invalid);
+			console.log(this.slideOneForm.controls['dob'].valid);
 
       if(!this.slideOneForm.valid){
           this.signupSlider.slideTo(0);
@@ -135,7 +149,6 @@ export class RegisterPage {
               email: this.slideOneForm.controls['email'].value,
               password: this.slideOneForm.controls['passwords'].get('firstPass').value
             };
-						console.log(loginCredentials);
             this.auth.login(loginCredentials, false).subscribe(data =>{
               if(data == true){
                 this.auth.setQuestions(this.user.getUserId(), this.slideTwoForm).subscribe(data => {
@@ -183,9 +196,7 @@ export class RegisterPage {
 
 		addImage(index){
 			this.imgIndex = index;
-			this.showLoading();
 			let clickEvent: MouseEvent = new MouseEvent("click", {bubbles: true});
-      console.log(this.nativeInputBtn.nativeElement.files);
 			// this.showLoading();
 			this.renderer.invokeElementMethod(
         this.nativeInputBtn.nativeElement, "dispatchEvent", [clickEvent]
@@ -193,10 +204,10 @@ export class RegisterPage {
 		}
 
     fileChangeEvent($event){
+			this.showLoading();
       var file:File = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
       var myReader:FileReader = new FileReader();
       var that = this;
-      console.log(file);
       myReader.onloadend = function (loadEvent:any) {
           that.loading.dismiss();
           that.navCtrl.push(CropingImagePage, {
@@ -213,7 +224,6 @@ export class RegisterPage {
 		}
 
 		onEmailChange(value){
-			console.log(value);
 			if(value !=  ""){
 				this.emailVal.CheckEmail(value).subscribe(data => {
 		      this.slideOneForm.controls['email'].setErrors(data);

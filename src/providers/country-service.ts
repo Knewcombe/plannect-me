@@ -32,7 +32,6 @@ export class CountryInfo {
 export class CountryService {
 	Country: CountryInfo[] = [];
   constructor(public http: Http) {
-		console.log('Hello CountryService Provider');
 		if(window.sessionStorage.getItem('countryInfo')){
 			for(let entry of JSON.parse(window.sessionStorage.getItem('countryInfo'))){
 				this.Country.push(new CountryInfo(entry.alpha2, entry.alpha3, entry.emoji, entry.ioc, entry.name));
@@ -64,7 +63,6 @@ export class CountryService {
 							}
 						}
 						window.sessionStorage.setItem('countryInfo', JSON.stringify(this.Country));
-						console.log(this.Country);
 					},
 					err => {
 						console.log("ERROR!: ", err);
@@ -74,7 +72,6 @@ export class CountryService {
   }
 
 	public getCountryList(){
-		console.log("Called");
 		return this.Country;
 	}
 

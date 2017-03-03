@@ -65,7 +65,6 @@ export class ProfilePage {
 
     this._handleReaderLoaded = (function(data) { // parenthesis are not necessary
       return new Promise((resolve, reject) => {
-        console.log(self.nativeInputBtn.nativeElement.files)
         self.imgSrc[self.imgIndex].imageBase64 = data;
   			self.imgSrc[self.imgIndex].changed = true;
         self.nativeInputBtn.nativeElement.value = '';
@@ -166,11 +165,8 @@ export class ProfilePage {
 
 		if(this.imgUpload.length > 0){
 			this.showLoading();
-			console.log("Update Images");
 			this.imageSer.updateImages(this.user.getToken(), this.user.getProfileId(), this.imgUpload).subscribe(data =>{
-				console.log(data);
 				if(data != false){
-					console.log("Image uploaded");
 					this.imgUpload = [];
 					this._imageChangeComplete();
 				}
@@ -181,7 +177,6 @@ export class ProfilePage {
 	_imageChangeComplete(){
 		this.user.resetImages();
 		this.imageSer.downloadImages(this.user.getToken(), this.user.getProfileId()).subscribe(data =>{
-			console.log(data);
 			if(data != false){
 				if(data.length != 0){
 					for(let image of data){
@@ -199,15 +194,13 @@ export class ProfilePage {
 		});
 	}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ProfilePage');
-  }
+  // ionViewDidLoad() {
+  //   console.log('ionViewDidLoad ProfilePage');
+  // }
 
   addImage(index){
-    console.log(index)
     this.imgIndex = index;
     let clickEvent: MouseEvent = new MouseEvent("click", {bubbles: true});
-    console.log(this.nativeInputBtn)
     this.renderer.invokeElementMethod(
       this.nativeInputBtn.nativeElement, "dispatchEvent", [clickEvent]
     );
@@ -218,7 +211,6 @@ export class ProfilePage {
     var file:File = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
     var myReader:FileReader = new FileReader();
     var that = this;
-    console.log(file);
     myReader.onloadend = function (loadEvent:any) {
         that.loading.dismiss();
         that.navCtrl.push(CropingImagePage, {
@@ -233,7 +225,6 @@ export class ProfilePage {
 		this.showLoading();
 		this.imgRemove.push({pictureId: this.imgSrc[index].picture_id});
 		this.imageSer.removeImages(this.user.getToken(), this.user.getProfileId(), this.imgRemove).subscribe(data =>{
-			console.log(data);
 			if(data != false){
 				this.loading.dismiss();
 				this.imgRemove = [];

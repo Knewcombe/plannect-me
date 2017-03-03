@@ -25,7 +25,6 @@ export class AskQuestionPage {
 
   constructor(private navCtrl: NavController, private navParams: NavParams, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private auth: AuthService, public formBuilder: FormBuilder) {
 		this.questions = navParams.get('questions');
-		console.log(this.questions);
 
 		this.answerForm = formBuilder.group({
 			firstAns: ['', Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
@@ -35,9 +34,9 @@ export class AskQuestionPage {
 
 	}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad AskQuestionPage');
-  }
+  // ionViewDidLoad() {
+  //   console.log('ionViewDidLoad AskQuestionPage');
+  // }
 
 	submitAnswer(){
 		this.showLoading();
@@ -65,9 +64,7 @@ export class AskQuestionPage {
 				'answer': answer.toLowerCase()
 			})
 		})
-		console.log(questionArray);
 		this.auth.answerQuestions(questionArray).subscribe(data =>{
-			console.log(data);
 			if(data != false){
 				this.loading.dismiss();
 				this.navCtrl.push(ChangePassPage, {

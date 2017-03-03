@@ -51,9 +51,6 @@ export class CropingImagePage {
     this.callback = navParams.get('callback');
 
 		this.data = {}
-
-    console.log(this.image);
-		console.log(this.cropperSettings);
     // this.cropper.setImage()
 
 	}
@@ -62,8 +59,6 @@ export class CropingImagePage {
 		this.image.src = this.navParams.get('src');
     var that = this;
     this.image.onload = function() {
-      console.log('loaded')
-      console.log(that.cropper);
       that.cropper.setImage(that.image);
       that.loading.dismiss();
     }

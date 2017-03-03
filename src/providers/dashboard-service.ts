@@ -1,4 +1,5 @@
 import { Injectable, Component } from '@angular/core';
+import { NavController } from 'ionic-angular';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { FormGroup } from '@angular/forms';
 import { SERVER_URL } from './config';
@@ -6,6 +7,8 @@ import { Observable } from 'rxjs/Observable';
 import { User, UserInfo, ProfileInfo, TokenInfo } from '../providers/user'
 import { ImageService, Images } from '../providers/image-service'
 import 'rxjs/add/operator/map';
+
+import { HomePage } from '../pages/home/home'
 
 /*
   Generated class for the DashboardService provider.
@@ -29,7 +32,7 @@ let GetFavAmountURL = SERVER_URL+ 'api/profiles/get_favouite_amount'
 export class DashboardService {
 	//Will need to get the information for the other members and and give them to the dashbaord to place into the members
 	//class once it is complete will need to figure out image stuff
-
+	private navCtrl: NavController;
   constructor(private http: Http, private user: User) {}
 
 	public getProfiles(tokenInfo, searchOptions, country, profileId){
@@ -38,7 +41,6 @@ export class DashboardService {
 			requestCountry: country,
 			searchOptions: searchOptions
 		});
-    console.log(searchOptions)
 		let headers = new Headers({ 'Content-Type': 'application/json' });
 		let options = new RequestOptions({ headers: headers });
 		return Observable.create(observer => {
@@ -47,15 +49,27 @@ export class DashboardService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(data.data);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(data.data);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -77,15 +91,27 @@ export class DashboardService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(data.data);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(data.data);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -108,15 +134,27 @@ export class DashboardService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(data.data);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(data.data);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -139,15 +177,27 @@ export class DashboardService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(data.data);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(data.data);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -170,15 +220,27 @@ export class DashboardService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(true);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(true);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -201,15 +263,27 @@ export class DashboardService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(false);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(true);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(false);
+							}else{
+								observer.next(true);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -225,7 +299,6 @@ export class DashboardService {
 			rateProfileId: rateProfileId,
       value: value
 		});
-    console.log(body);
 		let headers = new Headers({ 'Content-Type': 'application/json' });
 		let options = new RequestOptions({ headers: headers });
 		return Observable.create(observer => {
@@ -234,15 +307,27 @@ export class DashboardService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(true);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(true);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -256,7 +341,6 @@ export class DashboardService {
     let body = JSON.stringify({
 			profileId: profileId
 		});
-    console.log(body);
 		let headers = new Headers({ 'Content-Type': 'application/json' });
 		let options = new RequestOptions({ headers: headers });
 		return Observable.create(observer => {
@@ -265,15 +349,27 @@ export class DashboardService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(data.data);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(data.data);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -295,15 +391,27 @@ export class DashboardService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(data.data);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(data.data);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');
@@ -325,15 +433,27 @@ export class DashboardService {
 				.map((res:Response) => res.json())
 				.subscribe(
 					data =>  {
-						if(data.token != ''){
-							this.user.updateToken(data.token);
-						}
-						if(data.data != false){
-							observer.next(data.data);
+						if(data.success == false){
+							if(window.localStorage.getItem('user') && window.localStorage.getItem('token')){
+								window.localStorage.removeItem('user');
+								window.localStorage.removeItem('token');
+							}else if(window.sessionStorage.getItem('user') && window.sessionStorage.getItem('token')){
+								window.sessionStorage.removeItem('user');
+								window.sessionStorage.removeItem('token');
+							}
+							this.user.removeUser();
+							this.navCtrl.setRoot(HomePage);
 						}else{
-							observer.next(false);
+							if(data.token != ''){
+								this.user.updateToken(data.token);
+							}
+							if(data.data != false){
+								observer.next(data.data);
+							}else{
+								observer.next(false);
+							}
+							observer.complete();
 						}
-						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');

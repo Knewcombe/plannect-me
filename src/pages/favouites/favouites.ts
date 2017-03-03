@@ -38,16 +38,16 @@ export class FavouitesPage {
 				for(let item of data){
 					this.dash.getProfileData(this.user.getToken(), item.fav_profile_id, this.user.getCountry()).subscribe(data =>{
 						if(data != false){
+							console.log(data);
 							for(let profile of data){
 								this.members.push(new Members(profile.profile_id, profile.country, profile.gender, profile.allow_rating, profile.hidden, profile.visable_rating));
 							}
 
 							for(let member of this.members){
-								console.log('called')
 								if(member.visable_rating){
 									this.dash.getAverage(this.user.getToken(), member.profile_id).subscribe(data =>{
 										if(data != false){
-											member.averageRating = data;
+											member.averageRating =  Math.ceil(data);
 										}
 									},
 									error => {
@@ -84,6 +84,7 @@ export class FavouitesPage {
 													member.images.push(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image, false))
 												}
 											}
+											this.loading.dismiss();
 									},error =>{
 										this.showError(error);
 									})
@@ -95,12 +96,9 @@ export class FavouitesPage {
 					})
 				}
 			}
-			this.loading.dismiss();
 		},error => {
 			this.showError(error);
-		})
-
-		console.log(this.members)
+		});
 	}
 
 	showError(text) {

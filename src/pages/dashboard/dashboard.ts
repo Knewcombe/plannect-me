@@ -34,7 +34,7 @@ export class DashboardPage {
 	maxMember = 5;
 	_currentIndex = 0;
 	countryList = [];
-  rangeValue = {lower:18, upper: 25};
+  rangeValue = {lower:18, upper: 35};
 
 	searchOptions = {
 		country: '',
@@ -55,58 +55,63 @@ export class DashboardPage {
 
 	getMembers(){
 		this.showLoading();
-		console.log('Getting memebers');
 		this.dash.getProfiles(this.user.getToken(), this.searchOptions, this.user.getCountry(), this.user.getProfileId()).subscribe(data => {
 			if(data != false){
-				for(let item of data.profile){
-					this.members.push(new Members(item.profile_id, item.country, item.gender, item.allow_rating, item.hidden, item.visable_rating));
-				}
-				for(let member of this.members){
-					if(member.visable_rating){
-						this.dash.getAverage(this.user.getToken(), member.profile_id).subscribe(data =>{
-							if(data != false){
-								member.averageRating = data;
-							}
-						},
-						error => {
-							this.showError(error);
-						})
-					}
-					if(member.allow_rating){
-						this.dash.getRating(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
-							if(data != false){
-								member.rating = data[0].rate_amount;
-							}
-						},
-						error => {
-							this.showError(error);
-						})
-					}
-					this.dash.getFavouite(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
-						member.fav = data;
-					},
-					error => {
-						this.showError(error);
-					})
-					if(member.images.length <= 0){
-						this.image.downloadImages(this.user.getToken(), member.profile_id).subscribe(data =>{
-								if(data != false){
-									for(let image of data){
-										member.images.push(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image, false))
-									}
-								}
-						})
-					}
-					console.log(this.countryList.length)
-					for(let countryInfo of this.countryList){
-						if(member.country == countryInfo.alpha2 || member.country == countryInfo.alpha3){
-							member.countryEmjo = countryInfo.emoji;
-							member.countryName = countryInfo.name;
+				if(data.profile){
+					if(data.profile.length > 0){
+						for(let item of data.profile){
+							this.members.push(new Members(item.profile_id, item.country, item.gender, item.allow_rating, item.hidden, item.visable_rating));
 						}
+						for(let member of this.members){
+							if(member.visable_rating){
+								this.dash.getAverage(this.user.getToken(), member.profile_id).subscribe(data =>{
+									if(data != false){
+										member.averageRating = Math.ceil(data);
+									}
+								},
+								error => {
+									this.showError(error);
+								})
+							}
+							if(member.allow_rating){
+								this.dash.getRating(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
+									if(data != false){
+										member.rating = data[0].rate_amount;
+									}
+								},
+								error => {
+									this.showError(error);
+								})
+							}
+							this.dash.getFavouite(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
+								member.fav = data;
+							},
+							error => {
+								this.showError(error);
+							})
+							if(member.images.length <= 0){
+								this.image.downloadImages(this.user.getToken(), member.profile_id).subscribe(data =>{
+										if(data != false){
+											for(let image of data){
+												member.images.push(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image, false))
+											}
+										}
+										this.loading.dismiss();
+								})
+							}
+							for(let countryInfo of this.countryList){
+								if(member.country == countryInfo.alpha2 || member.country == countryInfo.alpha3){
+									member.countryEmjo = countryInfo.emoji;
+									member.countryName = countryInfo.name;
+								}
+							}
+						}
+					}else{
+						this.loading.dismiss();
+						this.showMessage('No Members', 'No new members are found at this time. Please pull down on the page to refresh or refine your search options');
 					}
 				}
 			}
-			this.loading.dismiss();
 		},
 		error => {
 			this.showError(error);
@@ -114,7 +119,6 @@ export class DashboardPage {
 	}
 
 	openMenu(){
-		console.log('called')
 		this.menuCtrl.enable(true, 'menuContent');
     this.menuCtrl.open('menuContent');
 	}
@@ -130,8 +134,20 @@ export class DashboardPage {
     }
 		this.menuCtrl.close('searchContent');
     this.menuCtrl.enable(false, 'searchContent');
+		this.memberSlider.lockSwipeToNext(false);
+		this.memberSlider.slideTo(0);
     this.getMembers();
   }
+
+	doRefresh($event){
+		if(this.members.length > 0){
+      this.members = [];
+    }
+		this.memberSlider.lockSwipeToNext(false);
+		this.memberSlider.slideTo(0);
+    this.getMembers();
+		$event.complete();
+	}
 
   clearSearch(){
     this.searchOptions = {
@@ -139,17 +155,16 @@ export class DashboardPage {
   		gender: '',
   		age:{
   			min: 18,
-  			max: 100
+  			max: 35
   		}
   	}
-    this.rangeValue.lower = 0;
-    this.rangeValue.upper = 0;
+    this.rangeValue.lower = this.searchOptions.age.min;
+    this.rangeValue.upper = this.searchOptions.age.max;
     this.menuCtrl.close('searchContent');
     this.menuCtrl.enable(false, 'searchContent');
   }
 
   openSearchMenu(){
-		console.log('called')
     this.menuCtrl.enable(true, 'searchContent');
     this.menuCtrl.open('searchContent');
   }
@@ -189,6 +204,17 @@ export class DashboardPage {
 		this.user.removeUser();
 		this.loading.dismiss();
 		this.navCtrl.setRoot(HomePage);
+	}
+
+	showMessage(title, text){
+
+		this.loading.dismiss();
+	  let alert = this.alertCtrl.create({
+	    title: title,
+	    subTitle: text,
+	    buttons: ['OK']
+	  });
+		alert.present(prompt);
 	}
 
 	showError(text) {

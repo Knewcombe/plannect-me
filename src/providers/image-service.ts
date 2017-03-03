@@ -29,7 +29,7 @@ export class ImageService {
 	Image: Images;
 
   constructor(public http: Http, private user: User) {
-    console.log("Images");
+    // console.log("Images");
   }
 
 	public uploadImages(tokenInfo, profileId, imageArray){
