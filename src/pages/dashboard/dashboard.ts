@@ -31,7 +31,7 @@ export class DashboardPage {
 	loading: Loading;
 	members: Array<Members> = []
 	text: string;
-	maxMember = 5;
+	_maxIndex = 5;
 	_currentIndex = 0;
 	countryList = [];
   rangeValue = {lower:18, upper: 35};
@@ -47,75 +47,95 @@ export class DashboardPage {
 
   constructor(public navCtrl: NavController, public menuCtrl: MenuController, private loadingCtrl: LoadingController,
 		private alertCtrl: AlertController, private user: User, private dash: DashboardService, private image: ImageService, private country: CountryService) {
-
+    this.getProfiles();
 		this.countryList = this.country.getCountryList();
-		this.getMembers();
     this.rangeValue = {lower: this.searchOptions.age.min, upper: this.searchOptions.age.min};
 	}
 
+  getProfiles(){
+    this.showLoading();
+    this.dash.getProfiles(this.user.getToken(), this.searchOptions, this.user.getCountry(), this.user.getProfileId()).subscribe(data => {
+      if(data != false){
+        if(data.profile){
+          if(data.profile.length > 0){
+            this.loading.dismiss();
+            for(let item of data.profile){
+              this.members.push(new Members(item.profile_id, item.country, item.gender, item.allow_rating, item.hidden, item.visable_rating));
+            }
+            this.getMembers();
+          }else{
+            this.loading.dismiss();
+            this.showMessage('No Members', 'No new members are found at this time. Please pull down on the page to refresh or refine your search options');
+          }
+        }
+      }
+    },
+    error => {
+      this.showError(error);
+    })
+  }
+
 	getMembers(){
-		this.showLoading();
-		this.dash.getProfiles(this.user.getToken(), this.searchOptions, this.user.getCountry(), this.user.getProfileId()).subscribe(data => {
-			if(data != false){
-				if(data.profile){
-					if(data.profile.length > 0){
-						for(let item of data.profile){
-							this.members.push(new Members(item.profile_id, item.country, item.gender, item.allow_rating, item.hidden, item.visable_rating));
-						}
-						for(let member of this.members){
-							if(member.visable_rating){
-								this.dash.getAverage(this.user.getToken(), member.profile_id).subscribe(data =>{
-									if(data != false){
-										member.averageRating = Math.ceil(data);
-									}
-								},
-								error => {
-									this.showError(error);
-								})
-							}
-							if(member.allow_rating){
-								this.dash.getRating(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
-									if(data != false){
-										member.rating = data[0].rate_amount;
-									}
-								},
-								error => {
-									this.showError(error);
-								})
-							}
-							this.dash.getFavouite(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
-								member.fav = data;
-							},
-							error => {
-								this.showError(error);
-							})
-							if(member.images.length <= 0){
-								this.image.downloadImages(this.user.getToken(), member.profile_id).subscribe(data =>{
-										if(data != false){
-											for(let image of data){
-												member.images.push(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image, false))
-											}
-										}
-										this.loading.dismiss();
-								})
-							}
-							for(let countryInfo of this.countryList){
-								if(member.country == countryInfo.alpha2 || member.country == countryInfo.alpha3){
-									member.countryEmjo = countryInfo.emoji;
-									member.countryName = countryInfo.name;
-								}
-							}
-						}
-					}else{
-						this.loading.dismiss();
-						this.showMessage('No Members', 'No new members are found at this time. Please pull down on the page to refresh or refine your search options');
-					}
-				}
-			}
-		},
-		error => {
-			this.showError(error);
-		})
+    var tempIndex = 0;
+    for(let member of this.members){
+      console.log('Test '+tempIndex +' '+this._currentIndex);
+      if(tempIndex == this._currentIndex && this._currentIndex <= this._maxIndex){
+        console.log('Test if '+this._currentIndex);
+        if(member.visable_rating){
+          this.dash.getAverage(this.user.getToken(), member.profile_id).subscribe(data =>{
+            if(data != false){
+              member.averageRating = Math.ceil(data);
+            }
+          },
+          error => {
+            this.showError(error);
+          })
+        }
+        if(member.allow_rating){
+          this.dash.getRating(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
+            if(data != false){
+              member.rating = data[0].rate_amount;
+            }
+          },
+          error => {
+            this.showError(error);
+          })
+        }
+        this.dash.getFavouite(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
+          member.fav = data;
+        },
+        error => {
+          this.showError(error);
+        })
+        if(member.images.length <= 0){
+          this.image.downloadImages(this.user.getToken(), member.profile_id).subscribe(data =>{
+              if(data != false){
+                for(let image of data){
+                  member.images.push(new Images(image.pictureId, 'data:image/JPEG;base64,'+image.image, false))
+                }
+              }
+          })
+        }
+        for(let countryInfo of this.countryList){
+          if(member.country == countryInfo.alpha2 || member.country == countryInfo.alpha3){
+            member.countryEmjo = countryInfo.emoji;
+            member.countryName = countryInfo.name;
+          }
+        }
+        this._currentIndex++
+      }else{
+        if(tempIndex == this.members.length - 1 && this._currentIndex != this.members.length - 1){
+          this._maxIndex = this._currentIndex + 5;
+          console.log(this._maxIndex);
+          if(this._currentIndex >= this.members.length - 1){
+            console.log('test');
+            this._maxIndex = this.members.length
+          }
+        }
+      }
+      tempIndex++
+    }
+    console.log(this.members);
 	}
 
 	openMenu(){
@@ -136,7 +156,9 @@ export class DashboardPage {
     this.menuCtrl.enable(false, 'searchContent');
 		this.memberSlider.lockSwipeToNext(false);
 		this.memberSlider.slideTo(0);
-    this.getMembers();
+    this._maxIndex = 5;
+  	this._currentIndex = 0;
+    this.getProfiles();
   }
 
 	doRefresh($event){
@@ -145,7 +167,9 @@ export class DashboardPage {
     }
 		this.memberSlider.lockSwipeToNext(false);
 		this.memberSlider.slideTo(0);
-    this.getMembers();
+    this._maxIndex = 5;
+  	this._currentIndex = 0;
+    this.getProfiles();
 		$event.complete();
 	}
 
@@ -162,6 +186,12 @@ export class DashboardPage {
     this.rangeValue.upper = this.searchOptions.age.max;
     this.menuCtrl.close('searchContent');
     this.menuCtrl.enable(false, 'searchContent');
+    if(this.members.length > 0){
+      this.members = [];
+    }
+    this._maxIndex = 5;
+  	this._currentIndex = 0;
+    this.getProfiles();
   }
 
   openSearchMenu(){
@@ -174,6 +204,9 @@ export class DashboardPage {
       this.memberSlider.lockSwipeToNext(true);
     }else{
       this.memberSlider.lockSwipeToNext(false);
+    }
+    if(this.memberSlider.getActiveIndex() + 1 >= this._currentIndex){
+      this.getMembers();
     }
 	}
 
