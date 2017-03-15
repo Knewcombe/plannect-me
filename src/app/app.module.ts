@@ -14,6 +14,7 @@ import { AskQuestionPage } from '../pages/ask-question/ask-question';
 import { ForgotPassPage } from '../pages/forgot-pass/forgot-pass';
 import { ChangePassPage } from '../pages/change-pass/change-pass';
 import { MemberListComponent } from '../components/member-list/member-list'
+import {LoadingModalComponent} from '../components/loading-modal/loading-modal';
 import { CropingImagePage } from '../pages/croping-image/croping-image';
 
 import { ImageCropperComponent, CropperSettings, Bounds } from 'ng2-img-cropper';
@@ -53,7 +54,8 @@ enableProdMode();
 		ChangePassPage,
 		MemberListComponent,
 		CropingImagePage,
-		ImageCropperComponent
+		ImageCropperComponent,
+    LoadingModalComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp, {

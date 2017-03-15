@@ -5,20 +5,26 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
   <ion-navbar color="primary">
     <ion-title>Favouites</ion-title>
   </ion-navbar>
-
 </ion-header>
-
-
-<ion-content padding>
-	<ion-list>
-		<ion-row *ngFor="let member of members">
-			<ion-col width-100>
-				<member-list [member]='member'></member-list>
-			</ion-col>
-		</ion-row>
-	</ion-list>
+<ion-fab left middle edge *ngIf="members[_activeIndex - 1]">
+ <button ion-fab class="right" (click)="previous()">
+   <ion-icon name="arrow-back" text-left></ion-icon>
+ </button>
+</ion-fab>
+<ion-fab right middle edge *ngIf="members[_activeIndex + 1]">
+  <button ion-fab class="left" (click)="next()">
+    <ion-icon name="arrow-forward" text-right></ion-icon>
+  </button>
+</ion-fab>
+<ion-content overflow-scroll="true">
+  <ion-slides *ngIf="members.length > 0" #memberSlider (ionSlideDidChange)='slideChanged()' direction='horizontal' pager='false'>
+    <ion-slide *ngFor="let member of members; let i = index">
+      <div *ngIf="_activeIndex == i || (_activeIndex + 1) == i || (_activeIndex - 1) == i">
+        <member-list [member]='member'></member-list>
+      </div>
+    </ion-slide>
+  </ion-slides>
 </ion-content>

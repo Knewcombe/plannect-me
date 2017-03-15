@@ -4,7 +4,7 @@ function isServer()
     return window.location.hostname.indexOf('https://ec2-35-167-1-235.us-west-2.compute.amazonaws.com') > 0;
 }
 
-export let SERVER_URL = isServer() ? "/" : "http://localhost:8080/";
+export let SERVER_URL = isServer() ? "/" : "https://plannectme.com/";
 
 //"http://192.168.0.207:8080/"
 //https://plannectme.com/

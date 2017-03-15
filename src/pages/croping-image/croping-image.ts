@@ -33,8 +33,8 @@ export class CropingImagePage {
     this.cropperSettings.croppedWidth = 200;
     this.cropperSettings.croppedHeight = 200;
 
-    this.cropperSettings.minWidth = 10;
-    this.cropperSettings.minHeight = 10;
+    this.cropperSettings.minWidth = 100;
+    this.cropperSettings.minHeight = 100;
 
     this.cropperSettings.rounded = false;
     this.cropperSettings.keepAspect = true;
@@ -44,7 +44,7 @@ export class CropingImagePage {
     this.cropperSettings.cropperDrawSettings.strokeColor = 'rgba(255,255,255,1)';
     this.cropperSettings.cropperDrawSettings.strokeWidth = 2;
     this.cropperSettings.preserveSize = false
-    this.cropperSettings.minWithRelativeToResolution = true
+    this.cropperSettings.minWithRelativeToResolution = false
 
 		this.cropperSettings.fileType = "image/jpg";
 

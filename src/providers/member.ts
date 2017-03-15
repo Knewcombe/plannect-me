@@ -25,11 +25,11 @@ export class Members {
 	visable_rating:boolean
 	images: Array<Images> = []
 
-  constructor(profile_id:number, country:string, gender:string, allow_rating:boolean, hidden:boolean, visable_rating:boolean) {
+  constructor(profile_id:number, country:string, rating:number, fav:boolean, gender:string, allow_rating:boolean, hidden:boolean, visable_rating:boolean) {
 		this.profile_id = profile_id,
 		this.averageRating = 0,
-		this.rating = 0,
-		this.fav = false,
+		this.rating = rating,
+		this.fav = fav,
 		this.country = country,
 		this.countryEmjo = '',
 		this.countryName = '',

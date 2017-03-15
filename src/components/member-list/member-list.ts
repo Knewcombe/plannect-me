@@ -35,6 +35,7 @@ export class MemberListComponent {
   }
 
 	favourite(profileId){
+    this._member.fav = true;
     this.dash.addFav(this.user.getToken(), this.user.getProfileId(), profileId).subscribe(data =>{
       this._member.fav = data;
     }, error => {
@@ -43,9 +44,12 @@ export class MemberListComponent {
 	}
 
 	notFavourite(profileId){
+    this._member.fav = false;
     this.dash.removeFav(this.user.getToken(), this.user.getProfileId(), profileId).subscribe(data =>{
       this._member.fav = data;
-    })
+    }, error => {
+			this.showError(error);
+		})
 	}
 
 	ratingProfile(profileId){

@@ -5,6 +5,7 @@ page-register-page {
 		background: color($colors, secondary);
 	}
 
+
 	ion-card img {
 		margin: auto;
   	display: block;
@@ -28,7 +29,6 @@ page-register-page {
 			padding-bottom: 20px;
 		}
 
-
 		ion-row {
        align-items: center;
        text-align: center;
@@ -44,7 +44,11 @@ page-register-page {
 		}
 
 		/* numbered buttons */
-		#status-buttons{}
+		#status-buttons{
+			margin-left: auto;
+	    margin-right: auto;
+	    display: block;
+		}
 
 		#status-buttons a{
 			color:#000000;

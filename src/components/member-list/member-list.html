@@ -6,25 +6,26 @@
 -->
 <ion-card>
 	<ion-card-header>
-		<button *ngIf="!_member.fav" class="text-right" (click)="favourite(_member.profile_id)" ion-button round icon-right small color="grey">
-			Fav
-			<ion-icon name="star"></ion-icon>
-		</button>
-		<button *ngIf="_member.fav" class="text-right" (click)="notFavourite(_member.profile_id)" ion-button round icon-right small color="secondary">
-			Fav
-			<ion-icon name="star"></ion-icon>
-		</button>
+		<ion-chip class="text-right" *ngIf="!_member.fav" color="primary" (tap)="favourite(_member.profile_id)">
+			<ion-icon name="star" color="grey"></ion-icon>
+			<ion-label>Fav</ion-label>
+		</ion-chip>
+		<ion-chip class="text-right" *ngIf="_member.fav"color="primary" (tap)="notFavourite(_member.profile_id)">
+			<ion-icon name="star" color="secondary"></ion-icon>
+			<ion-label>Fav</ion-label>
+		</ion-chip>
 		<span class="text-left">{{_member.countryEmjo}} {{_member.countryName}}</span>
 	</ion-card-header>
 	<img *ngIf='_member.images.length == 0' src="../../assets/img/defaultImage.gif">
-	<ion-slides #imageSlider *ngIf='_member.images.length != 0' direction='horizontal' pager='true' slidesPerView='1' loop='true'>
+	<img *ngIf='_member.images.length == 1' src="{{_member.images[0].imageBase64}}">
+	<ion-slides #imageSlider *ngIf='_member.images.length > 1' direction='horizontal' pager='true' slidesPerView='1' loop='true'>
 		<ion-slide *ngFor="let image of _member.images">
 			<img src="{{image.imageBase64}}">
 		</ion-slide>
 	</ion-slides>
   <ion-card-content>
 		<ion-item *ngIf="_member.allow_rating">
-			<ion-range min="60" max="100" step="1" pin="true" snaps="true" mode='md' debounce='500' (ionChange)="ratingProfile(_member.profile_id)" [(ngModel)]="_member.rating" color="secondary">
+			<ion-range min="60" max="100" step="1" pin="true" snaps="true" mode='md' debounce='500' (ionChange)="ratingProfile(_member.profile_id)" [(ngModel)]="_member.rating" color="primary">
 				<ion-label range-left small>60</ion-label>
 				<ion-label range-right small>100</ion-label>
 			</ion-range>

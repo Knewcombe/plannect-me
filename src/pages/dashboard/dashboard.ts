@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, AlertController, LoadingController, Loading, MenuController, Slides } from 'ionic-angular';
+import { NavController, AlertController, LoadingController, Loading, MenuController, Slides, IonicApp } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ImageService, Images } from '../../providers/image-service';
 import { CountryService } from '../../providers/country-service';
@@ -14,6 +14,7 @@ import { FavouitesPage } from '../../pages/favouites/favouites';
 import { StatsPage } from '../../pages/stats/stats';
 
 import { MemberListComponent } from '../../components/member-list/member-list'
+import {LoadingModalComponent} from '../components/loading-modal/loading-modal';
 
 /*
   Generated class for the Dashboard page.
@@ -33,15 +34,16 @@ export class DashboardPage {
 	text: string;
 	_maxIndex = 5;
 	_currentIndex = 0;
+  _activeIndex = 0;
 	countryList = [];
-  rangeValue = {lower:18, upper: 35};
+  rangeValue: any = { lower: 0, upper: 0 };
 
 	searchOptions = {
 		country: '',
 		gender: '',
 		age:{
 			min: 18,
-			max: 35
+			max: 100
 		}
 	}
 
@@ -49,24 +51,55 @@ export class DashboardPage {
 		private alertCtrl: AlertController, private user: User, private dash: DashboardService, private image: ImageService, private country: CountryService) {
     this.getProfiles();
 		this.countryList = this.country.getCountryList();
-    this.rangeValue = {lower: this.searchOptions.age.min, upper: this.searchOptions.age.min};
+    this.rangeValue = {lower: this.searchOptions.age.min, upper: this.searchOptions.age.max};
 	}
 
   getProfiles(){
     this.showLoading();
+    var rating = 0;
+    var fav = false;
+    var count = 0;
     this.dash.getProfiles(this.user.getToken(), this.searchOptions, this.user.getCountry(), this.user.getProfileId()).subscribe(data => {
       if(data != false){
-        if(data.profile){
+        if(data.profile != null){
           if(data.profile.length > 0){
-            this.loading.dismiss();
+            var tempData = data;
             for(let item of data.profile){
-              this.members.push(new Members(item.profile_id, item.country, item.gender, item.allow_rating, item.hidden, item.visable_rating));
+              this.dash.getRating(this.user.getToken(), this.user.getProfileId(), item.profile_id).subscribe(ratingData =>{
+                if(ratingData != false){
+                  item.rating = ratingData[0].rate_amount;
+                }else{
+                  item.rating = 0;
+                }
+                this.dash.getFavouite(this.user.getToken(), this.user.getProfileId(), item.profile_id).subscribe(favData =>{
+                  item.fav = favData;
+                  if(item.rating != 0 || item.fav != false){
+                    this.members.push(new Members(item.profile_id, item.country, item.rating, item.fav, item.gender, item.allow_rating, item.hidden, item.visable_rating));
+                  }else{
+                    this.members.unshift(new Members(item.profile_id, item.country, item.rating, item.fav, item.gender, item.allow_rating, item.hidden, item.visable_rating));
+                  }
+                  if(count == tempData.profile.length - 1){
+                    this.loading.dismiss();
+                    this.getMembers();
+                  }else{
+                    count++;
+                  }
+                },
+                error => {
+                  this.showError(error);
+                })
+              },
+              error => {
+                this.showError(error);
+              })
             }
-            this.getMembers();
           }else{
             this.loading.dismiss();
             this.showMessage('No Members', 'No new members are found at this time. Please pull down on the page to refresh or refine your search options');
           }
+        }else{
+          this.loading.dismiss();
+          this.showMessage('No Members', 'No new members are found at this time. Please pull down on the page to refresh or refine your search options');
         }
       }
     },
@@ -78,35 +111,19 @@ export class DashboardPage {
 	getMembers(){
     var tempIndex = 0;
     for(let member of this.members){
-      console.log('Test '+tempIndex +' '+this._currentIndex);
       if(tempIndex == this._currentIndex && this._currentIndex <= this._maxIndex){
-        console.log('Test if '+this._currentIndex);
         if(member.visable_rating){
-          this.dash.getAverage(this.user.getToken(), member.profile_id).subscribe(data =>{
-            if(data != false){
-              member.averageRating = Math.ceil(data);
-            }
-          },
-          error => {
-            this.showError(error);
-          })
+          if(member.averageRating == 0){
+            this.dash.getAverage(this.user.getToken(), member.profile_id).subscribe(data =>{
+              if(data != false){
+                member.averageRating = Math.ceil(data);
+              }
+            },
+            error => {
+              this.showError(error);
+            })
+          }
         }
-        if(member.allow_rating){
-          this.dash.getRating(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
-            if(data != false){
-              member.rating = data[0].rate_amount;
-            }
-          },
-          error => {
-            this.showError(error);
-          })
-        }
-        this.dash.getFavouite(this.user.getToken(), this.user.getProfileId(), member.profile_id).subscribe(data =>{
-          member.fav = data;
-        },
-        error => {
-          this.showError(error);
-        })
         if(member.images.length <= 0){
           this.image.downloadImages(this.user.getToken(), member.profile_id).subscribe(data =>{
               if(data != false){
@@ -126,17 +143,26 @@ export class DashboardPage {
       }else{
         if(tempIndex == this.members.length - 1 && this._currentIndex != this.members.length - 1){
           this._maxIndex = this._currentIndex + 5;
-          console.log(this._maxIndex);
           if(this._currentIndex >= this.members.length - 1){
-            console.log('test');
             this._maxIndex = this.members.length
           }
         }
       }
       tempIndex++
     }
-    console.log(this.members);
+    // console.log(this._currentIndex)
+    // console.log(this._maxIndex)
+    // console.log(tempIndex);
+    // console.log(this.members)
 	}
+
+  previous(){
+    this.memberSlider.slidePrev();
+  }
+
+  next(){
+    this.memberSlider.slideNext();
+  }
 
 	openMenu(){
 		this.menuCtrl.enable(true, 'menuContent');
@@ -154,10 +180,14 @@ export class DashboardPage {
     }
 		this.menuCtrl.close('searchContent');
     this.menuCtrl.enable(false, 'searchContent');
-		this.memberSlider.lockSwipeToNext(false);
-		this.memberSlider.slideTo(0);
+    if(this.memberSlider){
+      console.log('true');
+      this.memberSlider.lockSwipeToNext(false);
+  		this.memberSlider.slideTo(0);
+    }
     this._maxIndex = 5;
   	this._currentIndex = 0;
+    this._activeIndex = 0 ;
     this.getProfiles();
   }
 
@@ -165,10 +195,14 @@ export class DashboardPage {
 		if(this.members.length > 0){
       this.members = [];
     }
-		this.memberSlider.lockSwipeToNext(false);
-		this.memberSlider.slideTo(0);
+    if(this.memberSlider){
+      console.log('true');
+      this.memberSlider.lockSwipeToNext(false);
+  		this.memberSlider.slideTo(0);
+    }
     this._maxIndex = 5;
   	this._currentIndex = 0;
+    this._activeIndex = 0 ;
     this.getProfiles();
 		$event.complete();
 	}
@@ -179,7 +213,7 @@ export class DashboardPage {
   		gender: '',
   		age:{
   			min: 18,
-  			max: 35
+  			max: 100
   		}
   	}
     this.rangeValue.lower = this.searchOptions.age.min;
@@ -191,6 +225,7 @@ export class DashboardPage {
     }
     this._maxIndex = 5;
   	this._currentIndex = 0;
+    this._activeIndex = 0 ;
     this.getProfiles();
   }
 
@@ -200,12 +235,13 @@ export class DashboardPage {
   }
 
   slideChanged(){
+    this._activeIndex = this.memberSlider.getActiveIndex();
     if((this.memberSlider.getActiveIndex()) >= (this.members.length - 1)){
       this.memberSlider.lockSwipeToNext(true);
     }else{
       this.memberSlider.lockSwipeToNext(false);
     }
-    if(this.memberSlider.getActiveIndex() + 1 >= this._currentIndex){
+    if(this.memberSlider.getActiveIndex() + 2 >= this._currentIndex){
       this.getMembers();
     }
 	}

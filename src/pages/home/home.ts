@@ -38,7 +38,7 @@ export class HomePage {
         this.loading.dismiss();
         this.navCtrl.setRoot(DashboardPage);
       }else{
-				this.showError("Access Denied");
+				this.showError("Email or Password is incorrect, please try again");
 			}
     },
     error => {

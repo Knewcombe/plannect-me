@@ -12,7 +12,6 @@
       </ion-title>
     </ion-navbar>
 </ion-header>
-
 <ion-content class="register-content">
 	<ion-row class="logo-row">
 		<ion-col width-100 text-center>
@@ -71,8 +70,9 @@
   					<ion-item>
   						<ion-label floating>Gender</ion-label>
   							<ion-select formControlName="gender" tabindex="-7" [class.error]="!slideOneForm.controls.gender.valid && (submitAttempt)">
-  								<ion-option value="M" checked="true">Male</ion-option>
-  								<ion-option value="F">Female</ion-option>
+                  <ion-option value="M" checked="true">Male</ion-option>
+                  <ion-option value="F">Female</ion-option>
+                  <ion-option value="C">Couples</ion-option>
   							</ion-select>
           	</ion-item>
   					<ion-item>

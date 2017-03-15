@@ -11,6 +11,7 @@
         <ion-icon name="more"></ion-icon>
       </button>
     </ion-buttons>
+    <ion-title>Plannectme</ion-title>
     <ion-buttons end class="text-right">
       <button ion-button (click)="openSearchMenu()">
         <ion-icon name="search"></ion-icon>
@@ -54,18 +55,21 @@
       <ion-item>
         <ion-label floating>Gender</ion-label>
           <ion-select [(ngModel)]='searchOptions.gender' tabindex="-7">
-            <ion-option value="M" checked="true">Male</ion-option>
+            <ion-option value="" checked="true">All</ion-option>
+            <ion-option value="M" >Male</ion-option>
             <ion-option value="F">Female</ion-option>
+            <ion-option value="C">Couples</ion-option>
           </ion-select>
       </ion-item>
       <ion-item>
         <ion-label floating>Country</ion-label>
           <ion-select tabindex="-8" [(ngModel)]='searchOptions.country'>
+            <ion-option value="" checked="true">All</ion-option>
             <ion-option *ngFor="let item of countryList" [value]="item.alpha2">{{item.name}}</ion-option>
           </ion-select>
       </ion-item>
       <ion-item>
-        <ion-range dualKnobs="true" [(ngModel)]='rangeValue' (ionChange)="changeAge()" min="18" max="100" step="1">
+        <ion-range dualKnobs="true" [(ngModel)]='rangeValue' (ionChange)="changeAge()" min="0" max="100" step="1">
           <ion-label range-left>{{rangeValue.lower}}</ion-label>
           <ion-label range-right>{{rangeValue.upper}}</ion-label>
         </ion-range>
@@ -79,6 +83,16 @@
     </ion-list>
   </ion-content>
 </ion-menu>
+<ion-fab left middle edge *ngIf="members[_activeIndex - 1]">
+ <button ion-fab class="right" (click)="previous()">
+   <ion-icon name="arrow-back" text-left></ion-icon>
+ </button>
+</ion-fab>
+<ion-fab right middle edge *ngIf="members[_activeIndex + 1]">
+  <button ion-fab class="left" (click)="next()">
+    <ion-icon name="arrow-forward" text-right></ion-icon>
+  </button>
+</ion-fab>
 <ion-content>
 	<ion-refresher (ionRefresh)="doRefresh($event)">
 		<ion-refresher-content
@@ -89,8 +103,10 @@
 		</ion-refresher-content>
 	</ion-refresher>
   <ion-slides *ngIf="members.length > 0" #memberSlider (ionSlideDidChange)='slideChanged()' direction='horizontal' pager='false'>
-    <ion-slide *ngFor="let member of members">
-      <member-list [member]='member'></member-list>
+    <ion-slide *ngFor="let member of members; let i = index">
+      <div *ngIf="_activeIndex == i || (_activeIndex + 1) == i || (_activeIndex - 1) == i">
+        <member-list [member]='member'></member-list>
+      </div>
     </ion-slide>
   </ion-slides>
 </ion-content>
