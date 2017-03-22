@@ -47,8 +47,12 @@ member-list {
  	 	border: 1px solid color($colors, primary);
 	}
 
+	.col{
+		padding: 0;
+	}
+
 	.card-content{
-		padding: 5px 6px 5px 6px;
+		padding: 0px 6px 5px 6px;
 	}
 
 	.swiper-pagination-bullet {
@@ -57,6 +61,35 @@ member-list {
 
 	.swiper-pagination-bullet-active {
 		background-color: color($colors, secondary)
+	}
+
+	.thumbnail-row{
+		// border-top: 1px solid color($colors, grey);
+		// border-bottom: 1px solid color($colors, grey);
+		width: 50%;
+		margin: 0 auto;
+	}
+
+	.thumbnail-row img{
+		border: 1px solid color($colors, primary);
+		max-width: 100% !important;
+		opacity: 0.5;
+		cursor: pointer
+	}
+
+	.thumbnail-row .active{
+		border: 1px solid color($colors, secondary);
+		opacity: 1;
+	}
+
+	ion-thumbnail img {
+    width: 80px !important;
+	}
+
+	@media (max-width: 850px) {
+		img {
+			max-width: 80% !important;
+		}
 	}
 
 	@media (min-width: 850px) {

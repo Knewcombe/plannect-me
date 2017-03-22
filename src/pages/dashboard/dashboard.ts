@@ -153,7 +153,7 @@ export class DashboardPage {
     // console.log(this._currentIndex)
     // console.log(this._maxIndex)
     // console.log(tempIndex);
-    // console.log(this.members)
+    console.log(this.members)
 	}
 
   previous(){

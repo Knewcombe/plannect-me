@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { NavController, AlertController, LoadingController, Loading, MenuController } from 'ionic-angular';
+import { Camera } from 'ionic-native';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../providers/auth-service';
 import { ImageService, Images } from '../../providers/image-service';
@@ -199,27 +200,77 @@ export class ProfilePage {
   // }
 
   addImage(index){
-    this.imgIndex = index;
-    let clickEvent: MouseEvent = new MouseEvent("click", {bubbles: true});
-    this.renderer.invokeElementMethod(
-      this.nativeInputBtn.nativeElement, "dispatchEvent", [clickEvent]
-    );
+    let alert = this.alertCtrl.create({
+      title: 'New Picture',
+      buttons: [
+        {
+          text: 'Take Picture',
+          handler: () => {
+            Camera.getPicture({
+              quality: 100,
+              destinationType: Camera.DestinationType.DATA_URL,
+              sourceType: Camera.PictureSourceType.CAMERA,
+              allowEdit: true,
+              encodingType: Camera.EncodingType.JPEG,
+              targetWidth: 500,
+              targetHeight: 500,
+              saveToPhotoAlbum: true,
+              correctOrientation:true
+            }).then((imageData) => {
+              this.imgSrc[index].imageBase64 = 'data:image/jpeg;base64,' + imageData
+      				this.imgSrc[index].changed = true;
+            }, (err) => {
+             console.log(err);
+            });
+          }
+        },
+        {
+          text: 'Gallery',
+          handler: () => {
+            Camera.getPicture({
+              quality: 100,
+              destinationType: Camera.DestinationType.DATA_URL,
+              sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+              allowEdit: true,
+              encodingType: Camera.EncodingType.JPEG,
+              targetWidth: 500,
+              targetHeight: 500,
+              saveToPhotoAlbum: true,
+              correctOrientation:true
+            }).then((imageData) => {
+             this.imgSrc[index].imageBase64 = 'data:image/jpeg;base64,' + imageData
+     				 this.imgSrc[index].changed = true;
+            }, (err) => {
+             console.log(err);
+            });
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
-  fileChangeEvent($event){
-    this.showLoading();
-    var file:File = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
-    var myReader:FileReader = new FileReader();
-    var that = this;
-    myReader.onloadend = function (loadEvent:any) {
-        that.loading.dismiss();
-        that.navCtrl.push(CropingImagePage, {
-          src: loadEvent.target.result,
-          callback: that._handleReaderLoaded
-        });
-    };
-    myReader.readAsDataURL(file);
-  }
+  // fileChangeEvent($event){
+  //   this.showLoading();
+  //   var file:File = $event.dataTransfer ? $event.dataTransfer.files[0] : $event.target.files[0];
+  //   var myReader:FileReader = new FileReader();
+  //   var that = this;
+  //   myReader.onloadend = function (loadEvent:any) {
+  //       that.loading.dismiss();
+  //       that.navCtrl.push(CropingImagePage, {
+  //         src: loadEvent.target.result,
+  //         callback: that._handleReaderLoaded
+  //       });
+  //   };
+  //   myReader.readAsDataURL(file);
+  // }
 
   removeImage(index){
 		this.showLoading();

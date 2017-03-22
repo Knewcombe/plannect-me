@@ -18,6 +18,7 @@ import { User } from '../../providers/user'
 export class MemberListComponent {
 
 	@ViewChild('imageSlider') imageSlider: Slides;
+  currentIndex = 1;
   loading: Loading;
 	_member: Members;
 	rating:number = 0
@@ -31,7 +32,17 @@ export class MemberListComponent {
   get member() { return this._member; }
 
   constructor(private dash: DashboardService, private user: User, private alertCtrl: AlertController, private loadingCtrl: LoadingController) {
+    if(this.imageSlider){
+      this.currentIndex = this.imageSlider._activeIndex;
+      this.imageSlider.lockSwipes
+    }
+  }
 
+  changeImage(index){
+    if(this.imageSlider){
+      this.imageSlider.slideTo(index);
+      this.currentIndex = this.imageSlider._activeIndex;
+    }
   }
 
 	favourite(profileId){

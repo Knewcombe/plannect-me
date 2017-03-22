@@ -18,12 +18,19 @@
 	</ion-card-header>
 	<img *ngIf='_member.images.length == 0' src="../../assets/img/defaultImage.gif">
 	<img *ngIf='_member.images.length == 1' src="{{_member.images[0].imageBase64}}">
-	<ion-slides #imageSlider *ngIf='_member.images.length > 1' direction='horizontal' pager='true' slidesPerView='1' loop='true'>
+	<ion-slides #imageSlider *ngIf='_member.images.length > 1' direction='horizontal' pager='false' slidesPerView='1' loop='true'>
 		<ion-slide *ngFor="let image of _member.images">
 			<img src="{{image.imageBase64}}">
 		</ion-slide>
 	</ion-slides>
   <ion-card-content>
+		<ion-row class="thumbnail-row" *ngIf='_member.images.length > 1'>
+			<ion-col *ngFor="let image of _member.images; let i = index">
+				<ion-thumbnail (tap)="changeImage(i+1)">
+					<img [ngClass]="{active: currentIndex == i+1}" src="{{image.imageBase64}}">
+				</ion-thumbnail>
+			</ion-col>
+		</ion-row>
 		<ion-item *ngIf="_member.allow_rating">
 			<ion-range min="60" max="100" step="1" pin="true" snaps="true" mode='md' debounce='500' (ionChange)="ratingProfile(_member.profile_id)" [(ngModel)]="_member.rating" color="primary">
 				<ion-label range-left small>60</ion-label>
