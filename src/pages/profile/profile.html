@@ -108,7 +108,7 @@
         <ion-col width-50 *ngFor="let image of imgSrc; let i=index">
           <ion-card color="primary">
 						<img *ngIf="!image.imageBase64 == '' " [src]="image.imageBase64">
-						<img *ngIf="image.imageBase64 == '' " src="../../assets/img/defaultImage.gif">
+						<img *ngIf="image.imageBase64 == '' " src="assets/img/defaultImage.gif">
 						<ion-card-content>
 							<button ion-button full *ngIf="image.imageBase64 == '' " ion-button color="secondary" (click)="addImage(i)" tabindex="-14"><ion-icon name="camera"></ion-icon>Add</button>
 							<button ion-button full *ngIf="!image.imageBase64 == '' " ion-button color="secondary" (click)="removeImage(i)" tabindex="-15"><ion-icon name="close"></ion-icon>Remove</button>

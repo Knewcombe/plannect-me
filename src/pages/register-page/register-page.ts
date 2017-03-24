@@ -151,7 +151,7 @@ export class RegisterPage {
               email: this.slideOneForm.controls['email'].value,
               password: this.slideOneForm.controls['passwords'].get('firstPass').value
             };
-            this.auth.login(loginCredentials, false).subscribe(data =>{
+            this.auth.login(loginCredentials, false, false).subscribe(data =>{
               if(data == true){
                 this.auth.setQuestions(this.user.getUserId(), this.slideTwoForm).subscribe(data => {
                   if(data == true){

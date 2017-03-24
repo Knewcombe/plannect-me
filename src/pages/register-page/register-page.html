@@ -146,7 +146,7 @@
         <ion-col width-50 *ngFor="let image of imgSrc; let i=index">
           <ion-card color="primary">
 						<img *ngIf="!image == '' " [src]="image">
-						<img *ngIf="image == '' " src="../../assets/img/defaultImage.gif">
+						<img *ngIf="image == '' " src="assets/img/defaultImage.gif">
 						<ion-card-content>
 							<button *ngIf="image == '' " ion-button full color="secondary" (click)="addImage(i)" tabindex="-14"><ion-icon name="camera"></ion-icon>Add</button>
 							<button *ngIf="!image == '' " ion-button full color="secondary" (click)="removeImage(i)" tabindex="-15"><ion-icon name="close"></ion-icon>Remove</button>

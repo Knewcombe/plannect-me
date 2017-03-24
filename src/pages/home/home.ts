@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController, LoadingController, Loading } from 'ionic-angular';
+import { NavController, AlertController, LoadingController, Loading, Platform } from 'ionic-angular';
 
 import { AuthService } from '../../providers/auth-service';
 import { CountryService } from '../../providers/country-service';
@@ -11,16 +11,28 @@ import { ForgotPassPage } from '../../pages/forgot-pass/forgot-pass';
 
 import { User, UserInfo, ProfileInfo, TokenInfo } from '../../providers/user'
 
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
+
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html',
-  providers:[AuthService]
+  providers:[AuthService, FingerprintAIO]
 })
 export class HomePage {
 	loading: Loading;
 	loginCredentials = {email: '', password: ''};
 	keeploggedin = false;
-  constructor(private navCtrl: NavController,  private loadingCtrl: LoadingController, private country:CountryService, private auth: AuthService, private alertCtrl: AlertController, private user: User) {
+  fingerPrintLogin = false;
+  hasFingerLogin = false;
+  constructor(platform: Platform, private navCtrl: NavController,  private loadingCtrl: LoadingController, private country:CountryService, private auth: AuthService,
+    private alertCtrl: AlertController, private user: User, private touchId: FingerprintAIO) {
+      platform.ready().then(() => {
+      this.touchId.isAvailable().then(result =>{
+          this.hasFingerLogin = true;
+        }).catch(err => {
+          this.hasFingerLogin = false;
+        });
+      });
   }
 
 	public createAccount() {
@@ -33,7 +45,7 @@ export class HomePage {
 
 	public login() {
     this.showLoading()
-    this.auth.login(this.loginCredentials, this.keeploggedin).subscribe(data => {
+    this.auth.login(this.loginCredentials, this.keeploggedin, this.fingerPrintLogin).subscribe(data => {
       if (data == true) {
         this.loading.dismiss();
         this.navCtrl.setRoot(DashboardPage);

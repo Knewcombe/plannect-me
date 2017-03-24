@@ -7,23 +7,66 @@ import { DashboardPage } from '../pages/dashboard/dashboard';
 
 import { AuthService } from '../providers/auth-service';
 import { CountryService } from '../providers/country-service';
-import { ImageService, Images } from '../providers/image-service'
+import { ImageService, Images } from '../providers/image-service';
+
+import { FingerprintAIO } from '@ionic-native/fingerprint-aio';
+import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage';
 
 import { User, UserInfo, ProfileInfo, TokenInfo } from '../providers/user'
 
 @Component({
   templateUrl: 'app.html',
-	providers: [AuthService]
+	providers: [AuthService, SecureStorage, FingerprintAIO]
 })
 
 export class MyApp {
   rootPage;
-  constructor(platform: Platform, private user: User, private auth: AuthService, private image: ImageService, private alertCtrl: AlertController) {
+  loading: Loading;
+  constructor(platform: Platform, private user: User, private auth: AuthService, private image: ImageService,
+    private alertCtrl: AlertController, private touchId: FingerprintAIO, private secureStorage:SecureStorage, private loadingCtrl: LoadingController) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+      //, private touchId: TouchID, private secureStorage: SecureStorage
       StatusBar.styleDefault();
       Splashscreen.hide();
+      // this.secureStorage = new SecureStorage();
+      this.secureStorage.create('appData').then((storage: SecureStorageObject) => {
+          storage.get('loginInfo')
+          .then(
+            data => {
+              this.touchId.isAvailable().then(result =>{
+                  this.touchId.show({
+                     clientId: "Plannectme",
+                     clientSecret: "password"
+                 }).then(result => {
+                      this.showLoading()
+                      this.auth.login(JSON.parse(data), false, true).subscribe(data => {
+                        if (data == true) {
+                          this.loading.dismiss();
+                          this.rootPage = DashboardPage;
+                        }else{
+                  				this.showError("Email or Password is incorrect, please try again");
+                  			}
+                      },
+                      error => {
+                        this.showError(error);
+                      });
+                    }).catch(err => {
+                      console.log('Show error'+err);
+                    });
+                }).catch(err => {
+                  console.log(err);
+                });
+            },
+            error => {
+              console.log('No data')
+            }
+          );
+        },
+        error => console.log(error)
+      );
+
 
 			var userData = null;
 			var tokenData = null;
@@ -59,4 +102,21 @@ export class MyApp {
 			}
     });
   }
+  showError(text) {
+    this.loading.dismiss();
+    let alert = this.alertCtrl.create({
+      title: 'Fail',
+      subTitle: text,
+      buttons: ['OK']
+    });
+
+    alert.present(prompt);
+  }
+
+  showLoading() {
+		this.loading = this.loadingCtrl.create({
+			content: 'Please wait...'
+		});
+		this.loading.present();
+	}
 }

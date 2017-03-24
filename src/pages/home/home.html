@@ -11,13 +11,13 @@
 	</ion-row>
 	<ion-row>
 		<ion-col width-35>
-			<img src="../../assets/img/guyFrontFace.jpg"/>
+			<img src="assets/img/guyFrontFace.jpg"/>
 		</ion-col>
 		<ion-col width-35>
-				<img src="../../assets/img/couple.jpg"/>
+				<img src="assets/img/couple.jpg"/>
 		</ion-col>
 		<ion-col width-35>
-			<img src="../../assets/img/girlFrontFace.jpg"/>
+			<img src="assets/img/girlFrontFace.jpg"/>
 		</ion-col>
 	</ion-row>
 	<ion-row (click)="about()">
@@ -46,6 +46,10 @@
 						<ion-item no-lines class="out">
 							<ion-label>Keep me logged in</ion-label>
 	    				<ion-checkbox [(ngModel)]="keeploggedin" [ngModelOptions]="{standalone: true}"></ion-checkbox>
+            </ion-item>
+						<ion-item no-lines class="out" *ngIf="hasFingerLogin">
+							<ion-label>Use fingerprint login</ion-label>
+	    				<ion-checkbox [(ngModel)]="fingerPrintLogin" [ngModelOptions]="{standalone: true}"></ion-checkbox>
             </ion-item>
           </ion-list>
         </ion-col>

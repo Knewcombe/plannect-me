@@ -16,7 +16,7 @@
 		</ion-chip>
 		<span class="text-left">{{_member.countryEmjo}} {{_member.countryName}}</span>
 	</ion-card-header>
-	<img *ngIf='_member.images.length == 0' src="../../assets/img/defaultImage.gif">
+	<img *ngIf='_member.images.length == 0' src="assets/img/defaultImage.gif">
 	<img *ngIf='_member.images.length == 1' src="{{_member.images[0].imageBase64}}">
 	<ion-slides #imageSlider *ngIf='_member.images.length > 1' direction='horizontal' pager='false' slidesPerView='1' loop='true'>
 		<ion-slide *ngFor="let image of _member.images">

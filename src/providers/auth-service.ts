@@ -1,5 +1,5 @@
 import { Injectable, Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { FormGroup } from '@angular/forms';
 import { SERVER_URL } from './config';
@@ -7,6 +7,9 @@ import { Observable } from 'rxjs/Observable';
 import { User, UserInfo, ProfileInfo, TokenInfo } from '../providers/user'
 import { ImageService, Images } from '../providers/image-service'
 import 'rxjs/add/operator/map';
+
+import { TouchID } from '@ionic-native/touch-id';
+import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage';
 
 import { HomePage } from '../pages/home/home'
 /*
@@ -31,11 +34,12 @@ let GetAllRatings = SERVER_URL + 'api/profiles/get_all_ratings'
 @Injectable()
 export class AuthService {
 	private navCtrl: NavController;
-  constructor(public http: Http, private user: User, private image: ImageService) {
+	// private secureStorage:SecureStorage;
+  constructor(public http: Http, private user: User, private image: ImageService, private platform: Platform, private secureStorage: SecureStorage) {
     // console.log(loginURL);
   }
 
-	public login(credentials, keeploggedin) {
+	public login(credentials, keeploggedin, fingerPrintLogin) {
     if (credentials.email === null || credentials.password === null) {
       return Observable.throw("Please insert credentials");
     } else {
@@ -84,6 +88,22 @@ export class AuthService {
 										window.sessionStorage.setItem('token', JSON.stringify({
 												tokenInfo: this.user.getToken()
 										}))
+									}
+									if(fingerPrintLogin){
+										this.platform.ready().then(() => {
+								      this.secureStorage.create('appData').then((storage: SecureStorageObject) => {
+								          console.log('Storage is ready!');
+													storage.set('loginInfo', JSON.stringify({email:credentials.email, password:credentials.password}))
+										        .then(
+										        data => {
+										          console.log('stored info');
+										        },
+										        error => console.log(error)
+										        );
+								        },
+								        error => console.log(error)
+								      );
+										})
 									}
 									observer.next(true);
 									observer.complete();

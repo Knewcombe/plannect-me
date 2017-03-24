@@ -17,6 +17,8 @@ import { MemberListComponent } from '../components/member-list/member-list'
 import {LoadingModalComponent} from '../components/loading-modal/loading-modal';
 import { CropingImagePage } from '../pages/croping-image/croping-image';
 
+import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage';
+
 import { ImageCropperComponent, CropperSettings, Bounds } from 'ng2-img-cropper';
 
 //Services
