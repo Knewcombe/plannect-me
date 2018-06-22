@@ -1,9 +1,11 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { NavController, AlertController, LoadingController, Loading, MenuController, Slides } from 'ionic-angular';
+import { NavController, AlertController, LoadingController, Loading, MenuController, Slides, PopoverController, ViewController } from 'ionic-angular';
 
 import { Members } from '../../providers/member'
 import { DashboardService } from '../../providers/dashboard-service'
 import { User } from '../../providers/user'
+
+import { PopoverComponent } from '../../components/popover/popover'
 
 /*
   Generated class for the MemberList component.
@@ -11,10 +13,13 @@ import { User } from '../../providers/user'
   See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
   for more info on Angular 2 Components.
 */
+
+
 @Component({
   selector: 'member-list',
   templateUrl: 'member-list.html'
 })
+
 export class MemberListComponent {
 
 	@ViewChild('imageSlider') imageSlider: Slides;
@@ -31,15 +36,21 @@ export class MemberListComponent {
 
   get member() { return this._member; }
 
-  constructor(private dash: DashboardService, private user: User, private alertCtrl: AlertController, private loadingCtrl: LoadingController) {
+  constructor(private dash: DashboardService, private user: User, private alertCtrl: AlertController, private loadingCtrl: LoadingController, private popoverCtrl: PopoverController) {
     if(this.imageSlider){
       this.currentIndex = this.imageSlider._activeIndex;
-      this.imageSlider.lockSwipes
+      this.imageSlider.lockSwipes(true);
     }
+  }
+
+  ionSlideDrag(){
+    this.imageSlider.lockSwipes(true);
+    this.imageSlider.freeMode = true;
   }
 
   changeImage(index){
     if(this.imageSlider){
+      this.imageSlider.lockSwipes(false);
       this.imageSlider.slideTo(index);
       this.currentIndex = this.imageSlider._activeIndex;
     }
@@ -69,6 +80,18 @@ export class MemberListComponent {
       this.showError(error);
     })
 	}
+
+  presentPopover(ev, profileId) {
+    console.log(profileId)
+    let popover = this.popoverCtrl.create(PopoverComponent, {profileId:profileId});
+    popover.present({
+      ev: ev
+    });
+  }
+
+  reportMember(profileId){
+    console.log(profileId);
+  }
 
   showError(text) {
 

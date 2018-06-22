@@ -39,7 +39,6 @@ export class FavouitesPage {
   getProfiles(){
     this.showLoading();
     this.dash.findAllFav(this.user.getToken(), this.user.getProfileId()).subscribe(data =>{
-      console.log(data);
 			if(data != false){
   			for(let item of data){
   				this.dash.getProfileData(this.user.getToken(), item.fav_profile_id, this.user.getCountry()).subscribe(data =>{

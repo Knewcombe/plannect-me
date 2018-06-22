@@ -29,13 +29,16 @@ let AnswerQuestionURL = SERVER_URL + 'auth/answer_questions'
 let ChangePassword = SERVER_URL + 'auth/forgot_change_password'
 let GetUserURL = SERVER_URL + 'api/profiles/get_users_info'
 let GetAllRatings = SERVER_URL + 'api/profiles/get_all_ratings'
+let ValidateIAP = SERVER_URL + 'auth/validate_purchase'
+let checkPurchaseAPI = SERVER_URL + 'auth/check_purchase'
+let reportUserAPI = SERVER_URL + 'extra/report_user'
 
 
 @Injectable()
 export class AuthService {
 	private navCtrl: NavController;
-	// private secureStorage:SecureStorage;
-  constructor(public http: Http, private user: User, private image: ImageService, private platform: Platform, private secureStorage: SecureStorage) {
+	private secureStorage:SecureStorage;
+  constructor(public http: Http, private user: User, private image: ImageService, private platform: Platform) {
     // console.log(loginURL);
   }
 
@@ -92,11 +95,9 @@ export class AuthService {
 									if(fingerPrintLogin){
 										this.platform.ready().then(() => {
 								      this.secureStorage.create('appData').then((storage: SecureStorageObject) => {
-								          console.log('Storage is ready!');
 													storage.set('loginInfo', JSON.stringify({email:credentials.email, password:credentials.password}))
 										        .then(
 										        data => {
-										          console.log('stored info');
 										        },
 										        error => console.log(error)
 										        );
@@ -121,6 +122,33 @@ export class AuthService {
     }
   }
 
+	public checkPurchase(profileId){
+		let body = JSON.stringify({
+			profileId: profileId
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(checkPurchaseAPI, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data != false){
+							observer.next(true);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
+
 	public getUser(tokenInfo:TokenInfo, userId, profileId){
 		let body = JSON.stringify({
 			'userId': userId,
@@ -143,7 +171,9 @@ export class AuthService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//NOTE: Need to fix this
+							// this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -276,7 +306,8 @@ export class AuthService {
 									window.sessionStorage.removeItem('token');
 								}
 								this.user.removeUser();
-								this.navCtrl.setRoot(HomePage);
+								//this.navCtrl.setRoot(HomePage);
+								observer.next(null);
 							}else{
 								if(data != false){
 									if(data.token != ''){
@@ -322,7 +353,8 @@ export class AuthService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -457,7 +489,8 @@ export class AuthService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							observer.next(null);
+							//this.navCtrl.setRoot(HomePage);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -469,6 +502,66 @@ export class AuthService {
 							}
 							observer.complete();
 						}
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
+
+
+	public validatePurchase(transactionId, receipt, profileId){
+		let body = JSON.stringify({
+			transactionId: transactionId,
+			receipt: receipt,
+			profileId: profileId
+		});
+		console.log(body);
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(ValidateIAP, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data != false){
+							observer.next(true);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
+					},
+					err => {
+						observer.error('Unable to connect, please check connection');
+						console.log("ERROR!: ", err);
+					}
+				);
+		});
+	}
+
+	public reportUser(profileId){
+		console.log('Started')
+
+		let body = JSON.stringify({
+			profileId: profileId
+		});
+		let headers = new Headers({ 'Content-Type': 'application/json' });
+		let options = new RequestOptions({ headers: headers });
+		return Observable.create(observer => {
+			// At this point make a request to your backend to make a real check!
+			this.http.post(reportUserAPI, body, options)
+				.map((res:Response) => res.json())
+				.subscribe(
+					data =>  {
+						if(data != false){
+							observer.next(true);
+						}else{
+							observer.next(false);
+						}
+						observer.complete();
 					},
 					err => {
 						observer.error('Unable to connect, please check connection');

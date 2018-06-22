@@ -17,6 +17,7 @@ export class UserInfo {
 	profile_id: string;
 	user_email: string;
 	user_id: string;
+	pim: boolean;
 
   constructor(date_of_birth: string, first_name: string, last_name: string, profile_id: string, user_email: string, user_id: string) {
 		this.date_of_birth = date_of_birth;
@@ -25,6 +26,7 @@ export class UserInfo {
 		this.profile_id = profile_id;
 		this.user_email = user_email;
 		this.user_id = user_id;
+		this.pim = false;
   }
 }
 
@@ -107,8 +109,16 @@ export class User {
     return this.Images;
   }
 
+	public setPim(pim: boolean){
+    this.User.pim = pim;
+  }
+
   public getUserId(){
     return this.User.user_id;
+  }
+
+	public getPim(){
+    return this.User.pim;
   }
 
   public getFirstName(){

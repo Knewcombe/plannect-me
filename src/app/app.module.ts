@@ -14,12 +14,15 @@ import { AskQuestionPage } from '../pages/ask-question/ask-question';
 import { ForgotPassPage } from '../pages/forgot-pass/forgot-pass';
 import { ChangePassPage } from '../pages/change-pass/change-pass';
 import { MemberListComponent } from '../components/member-list/member-list'
-import {LoadingModalComponent} from '../components/loading-modal/loading-modal';
+import { PopoverComponent } from '../components/popover/popover'
+import { LoadingModalComponent } from '../components/loading-modal/loading-modal';
 import { CropingImagePage } from '../pages/croping-image/croping-image';
 
 import { SecureStorage, SecureStorageObject } from '@ionic-native/secure-storage';
 
 import { ImageCropperComponent, CropperSettings, Bounds } from 'ng2-img-cropper';
+
+import { AdMob } from '@ionic-native/admob';
 
 //Services
 import { CountryService } from '../providers/country-service';
@@ -57,7 +60,8 @@ enableProdMode();
 		MemberListComponent,
 		CropingImagePage,
 		ImageCropperComponent,
-    LoadingModalComponent
+    LoadingModalComponent,
+    PopoverComponent
   ],
   imports: [
     IonicModule.forRoot(MyApp, {
@@ -87,8 +91,9 @@ enableProdMode();
 		ForgotPassPage,
 		AskQuestionPage,
 		ChangePassPage,
-		CropingImagePage
+		CropingImagePage,
+    PopoverComponent
   ],
-	providers:[User, Member, CountryService, ImageService]
+	providers:[User, Member, CountryService, ImageService, AdMob]
 })
 export class AppModule {}

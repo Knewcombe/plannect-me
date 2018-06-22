@@ -4,9 +4,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ImageService, Images } from '../../providers/image-service';
 import { CountryService } from '../../providers/country-service';
 import { User, UserInfo, ProfileInfo, TokenInfo } from '../../providers/user'
+import { AdMob } from '@ionic-native/admob';
 
 import { Member, Members } from '../../providers/member'
 import { DashboardService } from '../../providers/dashboard-service'
+
+import { AuthService } from '../../providers/auth-service';
 
 import { HomePage } from '../../pages/home/home'
 import { ProfilePage } from '../../pages/profile/profile';
@@ -25,10 +28,11 @@ import {LoadingModalComponent} from '../components/loading-modal/loading-modal';
 @Component({
   selector: 'page-dashboard',
   templateUrl: 'dashboard.html',
-	providers: [DashboardService]
+	providers: [DashboardService, AdMob, AuthService]
 })
 export class DashboardPage {
   @ViewChild('memberSlider') memberSlider: Slides;
+  imageSlider: Slides
 	loading: Loading;
 	members: Array<Members> = []
 	text: string;
@@ -37,6 +41,12 @@ export class DashboardPage {
   _activeIndex = 0;
 	countryList = [];
   rangeValue: any = { lower: 0, upper: 0 };
+  _memeberChanged = false
+
+  admobid = {
+      banner: 'ca-app-pub-4424361334659470/9247609349', // or DFP format "/6253334/dfp_example_ad"
+      // interstitial: 'ca-app-pub-xxx/kkk'
+    }
 
 	searchOptions = {
 		country: '',
@@ -48,10 +58,28 @@ export class DashboardPage {
 	}
 
   constructor(public navCtrl: NavController, public menuCtrl: MenuController, private loadingCtrl: LoadingController,
-		private alertCtrl: AlertController, private user: User, private dash: DashboardService, private image: ImageService, private country: CountryService) {
+		private alertCtrl: AlertController, private user: User, private dash: DashboardService, private image: ImageService, private country: CountryService, private admob: AdMob, private auth: AuthService) {
+    console.log('Seeing if this is called')
     this.getProfiles();
 		this.countryList = this.country.getCountryList();
     this.rangeValue = {lower: this.searchOptions.age.min, upper: this.searchOptions.age.max};
+    this.searchOptions.country = this.user.getCountry();
+
+    this.auth.checkPurchase(this.user.getProfileId()).subscribe(data =>{
+        console.log('Console call second')
+        console.log(data)
+        if(data == false){
+          if(this.admob) this.admob.createBanner({
+            adId: this.admobid.banner,
+            position: this.admob.AD_POSITION.BOTTOM_CENTER,
+            autoShow: true });
+            this.user.setPim(false);
+        }else{
+          this.user.setPim(true);
+          this.searchOptions.country = '';
+          this.admob.removeBanner();
+        }
+    });
 	}
 
   getProfiles(){
@@ -99,9 +127,14 @@ export class DashboardPage {
           }
         }else{
           this.loading.dismiss();
-          this.showMessage('No Members', 'No new members are found at this time. Please pull down on the page to refresh or refine your search options');
+          this.navCtrl.setRoot(HomePage);
         }
+      }else if(data == null){
+        console.log("Nope");
+        this.navCtrl.setRoot(HomePage);
       }
+      console.log(this.members);
+      console.log(this.countryList);
     },
     error => {
       this.showError(error);
@@ -150,10 +183,6 @@ export class DashboardPage {
       }
       tempIndex++
     }
-    // console.log(this._currentIndex)
-    // console.log(this._maxIndex)
-    // console.log(tempIndex);
-    console.log(this.members)
 	}
 
   previous(){
@@ -181,7 +210,6 @@ export class DashboardPage {
 		this.menuCtrl.close('searchContent');
     this.menuCtrl.enable(false, 'searchContent');
     if(this.memberSlider){
-      console.log('true');
       this.memberSlider.lockSwipeToNext(false);
   		this.memberSlider.slideTo(0);
     }
@@ -196,7 +224,6 @@ export class DashboardPage {
       this.members = [];
     }
     if(this.memberSlider){
-      console.log('true');
       this.memberSlider.lockSwipeToNext(false);
   		this.memberSlider.slideTo(0);
     }
@@ -209,7 +236,7 @@ export class DashboardPage {
 
   clearSearch(){
     this.searchOptions = {
-  		country: '',
+  		country: this.user.getPim() ? '' : this.user.getCountry(),
   		gender: '',
   		age:{
   			min: 18,
@@ -234,6 +261,10 @@ export class DashboardPage {
     this.menuCtrl.open('searchContent');
   }
 
+  ionSlideDrag(){
+    this._memeberChanged = true;
+  }
+
   slideChanged(){
     this._activeIndex = this.memberSlider.getActiveIndex();
     if((this.memberSlider.getActiveIndex()) >= (this.members.length - 1)){
@@ -245,6 +276,18 @@ export class DashboardPage {
       this.getMembers();
     }
 	}
+
+  changeSlide($event){
+    if(!this._memeberChanged){
+      if($event.offsetDirection == 4){
+        this.memberSlider.slidePrev();
+      }else if($event.offsetDirection == 2){
+        this.memberSlider.slideNext();
+      }
+    }
+
+    this._memeberChanged = false;
+  }
 
 	profile(){
 		this.menuCtrl.close();
@@ -270,7 +313,7 @@ export class DashboardPage {
 			window.sessionStorage.removeItem('user');
 			window.sessionStorage.removeItem('token');
 		}
-		this.user.removeUser();
+    this.admob.removeBanner();
 		this.loading.dismiss();
 		this.navCtrl.setRoot(HomePage);
 	}

@@ -58,7 +58,8 @@ export class DashboardService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -100,7 +101,8 @@ export class DashboardService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -143,7 +145,8 @@ export class DashboardService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -186,7 +189,8 @@ export class DashboardService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -229,7 +233,8 @@ export class DashboardService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -272,7 +277,8 @@ export class DashboardService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -316,7 +322,8 @@ export class DashboardService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -358,7 +365,8 @@ export class DashboardService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -400,7 +408,8 @@ export class DashboardService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);
@@ -442,7 +451,8 @@ export class DashboardService {
 								window.sessionStorage.removeItem('token');
 							}
 							this.user.removeUser();
-							this.navCtrl.setRoot(HomePage);
+							//this.navCtrl.setRoot(HomePage);
+							observer.next(null);
 						}else{
 							if(data.token != ''){
 								this.user.updateToken(data.token);

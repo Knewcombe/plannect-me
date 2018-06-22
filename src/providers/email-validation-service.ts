@@ -17,7 +17,6 @@ let emailCheckURL = SERVER_URL + 'auth/email_check'
 export class EmailValidationService {
 
 	constructor(public http: Http) {
-		console.log(emailCheckURL);
 	}
 
 	public CheckEmail(email){

@@ -11,8 +11,18 @@
       </ion-title>
     </ion-navbar>
 </ion-header>
-
 <ion-content class="profile-content">
+  <ion-list *ngIf='!user.getPim()'>
+		<form #form="ngForm">
+			<ion-card>
+				<ion-item-divider color="primary">{{products.title}}</ion-item-divider>
+        <ion-card-content>
+          <p>{{products.description}}</p>
+        </ion-card-content>
+        <button ion-button full color="secondary" (click)="purchaseMembership()">Purchase for: {{products.price}}</button>
+			</ion-card>
+		</form>
+	</ion-list>
 	<ion-list>
 		<form #form="ngForm" [formGroup]="userForm">
 			<p *ngIf="submitUserAttempt && !userForm.valid" style="color: #ea6153;">Please fill out all details accurately.</p>

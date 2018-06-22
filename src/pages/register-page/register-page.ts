@@ -106,34 +106,29 @@ export class RegisterPage {
 			this.signupSlider.slidePrev();
 		}
 		test(){
-			console.log(this.slideOneForm.controls['dob'].value);
 			if(this.slideOneForm.controls['dob'].value){
-				// this.slideOneForm.controls['dob'].valid = false;
-				// this.slideOneForm.valid = true;
-				console.log(this.slideOneForm.controls['dob'].invalid);
-				console.log(this.slideOneForm.controls['dob'].valid);
+				this.slideOneForm.controls['dob'].valid = false;
+				this.slideOneForm.valid = true;
 			}
 		}
 		slideChanged() {
 			this.content.scrollToTop();
 			this.currentIndex = this.signupSlider.getActiveIndex();
 
-      // if(this.slideOneForm.get("dob").valid){
-      //   this.slideOneForm.controls['dob'].disable();
-      //   // let ageVal = this.slideOneForm.get('dob');
-      //   // if(ageVal['warnings'].toYoung){
-      //   //   this.slideThreeForm.controls['visiableRate'].disable();
-      //   //   this.slideThreeForm.controls['hidden'].disable();
-      //   //   this.slideThreeForm.controls['visiableRate'].setValue(0);
-      //   //   this.slideThreeForm.controls['hidden'].setValue(0);
-      //   // }
-      // }
+      if(this.slideOneForm.get("dob").valid){
+        this.slideOneForm.controls['dob'].disable();
+        let ageVal = this.slideOneForm.get('dob');
+        if(ageVal['warnings'].toYoung){
+          this.slideThreeForm.controls['visiableRate'].disable();
+          this.slideThreeForm.controls['hidden'].disable();
+          this.slideThreeForm.controls['visiableRate'].setValue(0);
+          this.slideThreeForm.controls['hidden'].setValue(0);
+        }
+      }
   	}
 
     save(){
       this.submitAttempt = true;
-			console.log(this.slideOneForm.controls['dob'].invalid);
-			console.log(this.slideOneForm.controls['dob'].valid);
 
       if(!this.slideOneForm.valid){
           this.signupSlider.slideTo(0);

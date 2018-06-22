@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { NavController, AlertController, LoadingController, Loading, MenuController } from 'ionic-angular';
-import { Camera } from 'ionic-native';
+import { Camera, InAppPurchase } from 'ionic-native';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../providers/auth-service';
 import { ImageService, Images } from '../../providers/image-service';
@@ -11,6 +11,7 @@ import { PassValidator } from '../../providers/pass_validation'
 import { CropingImagePage } from '../../pages/croping-image/croping-image';
 
 import { User, UserInfo, ProfileInfo, TokenInfo } from '../../providers/user'
+import { AdMob } from '@ionic-native/admob';
 
 /*
   Generated class for the Profile page.
@@ -39,6 +40,7 @@ export class ProfilePage {
 	currentIndex = 0;
 	imgUpload = [];
 	imgRemove = [];
+  products = []
   _handleReaderLoaded;
 
   userChanged: boolean = false;
@@ -48,7 +50,8 @@ export class ProfilePage {
 	submitPassAttempt: boolean = false;
 
   constructor(private renderer: Renderer, public formBuilder: FormBuilder, private navCtrl: NavController,  private loadingCtrl: LoadingController,
-	private auth: AuthService, private image: ImageService, private country: CountryService, private emailVal: EmailValidationService, private alertCtrl: AlertController, private user: User, private imageSer: ImageService) {
+	private auth: AuthService, private image: ImageService, private country: CountryService, private emailVal: EmailValidationService,
+  private alertCtrl: AlertController, private user: User, private imageSer: ImageService, private admob: AdMob) {
 
 		this.countryList = country.getCountryList();
 
@@ -56,13 +59,24 @@ export class ProfilePage {
 		this.profileInfo = this.user.getProfile();
     this.imgSrc = this.user.getImages();
 
+    console.log(this.user.getPim());
+
+    var self = this;
+
     for(var i = 0; i < 5; ++i){
       if(!this.imgSrc[i]){
         this.imgSrc.push(new Images(null, '', false));
       }
 		}
 
-    var self = this;
+    InAppPurchase.getProducts(['com.planectme.pim'])
+      .then(function (products) {
+        self.products = products[0];
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+
 
     this._handleReaderLoaded = (function(data) { // parenthesis are not necessary
       return new Promise((resolve, reject) => {
@@ -72,6 +86,8 @@ export class ProfilePage {
         resolve();
       });
     })
+
+
 
 		this.userForm = formBuilder.group({
 			firstName: [this.userInfo.first_name, Validators.compose([Validators.maxLength(30), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
@@ -132,6 +148,28 @@ export class ProfilePage {
         this.showError(error);
       })
     }
+  }
+
+  purchaseMembership(){
+    var self = this;
+    InAppPurchase
+    .subscribe('com.planectme.pim')
+    .then(function (data) {
+      console.log(data.transactionId);
+      self.auth.validatePurchase(data.transactionId, data.receipt, self.user.getProfileId()).subscribe(data =>{
+        console.log('complete');
+        if(data != false){
+          console.log('true')
+          self.user.setPim(true);
+          self.admob.removeBanner();
+        }else{
+          console.log('false')
+        }
+      });
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
   }
 
   savePassword(){

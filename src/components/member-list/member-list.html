@@ -6,6 +6,7 @@
 -->
 <ion-card>
 	<ion-card-header>
+		<span margin-horizontal class="text-right more_button" (tap)="presentPopover($event, _member.profile_id)"><ion-icon name="more"></ion-icon></span>
 		<ion-chip class="text-right" *ngIf="!_member.fav" color="primary" (tap)="favourite(_member.profile_id)">
 			<ion-icon name="star" color="grey"></ion-icon>
 			<ion-label>Fav</ion-label>
@@ -18,7 +19,7 @@
 	</ion-card-header>
 	<img *ngIf='_member.images.length == 0' src="assets/img/defaultImage.gif">
 	<img *ngIf='_member.images.length == 1' src="{{_member.images[0].imageBase64}}">
-	<ion-slides #imageSlider *ngIf='_member.images.length > 1' direction='horizontal' pager='false' slidesPerView='1' loop='true'>
+	<ion-slides #imageSlider *ngIf='_member.images.length > 1' direction='horizontal' pager='false' slidesPerView='1' loop='true' (ionSlideDrag)='ionSlideDrag()'>
 		<ion-slide *ngFor="let image of _member.images">
 			<img src="{{image.imageBase64}}">
 		</ion-slide>
